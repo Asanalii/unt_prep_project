@@ -24,7 +24,7 @@
     "subjects": "Предметы",
     "tests": "Тесты",
     "forum": "Форум",
-    "dashboard": "Дашборд",
+    "dashboard": "Дэшборд",
     "available": "Доступно",
     "soon": "Скоро",
     "duration_m": "Длительность: {min} мин."
@@ -38,5 +38,50 @@
     "text_exit": "Выйти из аккаунта?",
     "ok": "Да",
     "cancel": "Отмена"
+  },
+  "dashboard": {
+    "title": "Добавьте промпт для генерации вопросов",
+    "pick_subject": "Выберите предмет",
+    "pick_subject_first": "Сначала выберите предмет.",
+    "soon": "Скоро",
+    "add_prompt_image": "Добавить изображение-промпт",
+    "prompt_using_image": "Промпт по изображению",
+    "topics": "Темы",
+    "question_type": "Тип вопросов",
+    "type_single": "Один правильный ответ",
+    "type_multi": "Несколько правильных ответов",
+    "type_context": "Контекстные вопросы",
+    "type_mcq": "Тест (варианты)",
+    "type_open": "Открытый ответ",
+    "prompt_placeholder": "Опишите промпт + контекст для генерации вопросов",
+    "generate": "Сгенерировать"
+  },
+  "subjects": {
+    "math": "Математика",
+    "cs": "Информатика",
+    "physics": "Физика",
+    "chemistry": "Химия",
+    "biology": "Биология",
+    "history": "История",
+    "geography": "География",
+    "english": "Английский"
+  },
+  "topics": {
+    "math": {
+      "algebra": "Алгебра",
+      "geometry": "Геометрия",
+      "trigonometry": "Тригонометрия",
+      "calculus": "Математический анализ",
+      "probstat": "Вероятность и статистика",
+      "numberTheory": "Теория чисел"
+    },
+    "cs": {
+      "algorithms": "Алгоритмы",
+      "dataStructures": "Структуры данных",
+      "programmingBasics": "Основы программирования",
+      "databases": "Базы данных",
+      "booleanLogic": "Булева логика",
+      "networks": "Компьютерные сети"
+    }
   }
 }

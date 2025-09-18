@@ -39,7 +39,7 @@ watch(
   () => ui.locale,
   async (loc) => {
     localStorage.setItem("locale", loc);
-    document.documentElement.setAttribute("lang", loc); // <html lang="kz">
+    document.documentElement.setAttribute("lang", loc); // <html lang="kk">
     await loadLocale(loc);
   },
   { immediate: true }

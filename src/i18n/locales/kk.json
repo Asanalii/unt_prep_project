@@ -32,5 +32,48 @@
     "text_exit": "Аккаунттан шығасыз ба?",
     "ok": "Иә",
     "cancel": "Болдырмау"
+  },
+  "dashboard": {
+    "title": "Сұрақтарды генерациялау үшін промпт қосыңыз",
+    "pick_subject": "Пәнді таңдаңыз",
+    "pick_subject_first": "Алдымен пәнді таңдаңыз.",
+    "soon": "Жуықта",
+    "add_prompt_image": "Сурет-промпт қосу",
+    "prompt_using_image": "Сурет бойынша промпт",
+    "topics": "Тақырыптар",
+    "question_type": "Сұрақ түрі",
+    "type_single": "Бір дұрыс жауап",
+    "type_multi": "Бірнеше дұрыс жауап",
+    "type_context": "Контекстік сұрақтар",
+    "prompt_placeholder": "Сұрақтарды жасау үшін промпт пен контексті жазыңыз",
+    "generate": "Генерациялау"
+  },
+  "subjects": {
+    "math": "Математика",
+    "cs": "Информатика",
+    "physics": "Физика",
+    "chemistry": "Химия",
+    "biology": "Биология",
+    "history": "Тарих",
+    "geography": "География",
+    "english": "Ағылшын тілі"
+  },
+  "topics": {
+    "math": {
+      "algebra": "Алгебра",
+      "geometry": "Геометрия",
+      "trigonometry": "Тригонометрия",
+      "calculus": "Математикалық талдау",
+      "probstat": "Ықтималдық және статистика",
+      "numberTheory": "Сандар теориясы"
+    },
+    "cs": {
+      "algorithms": "Алгоритмдер",
+      "dataStructures": "Деректер құрылымдары",
+      "programmingBasics": "Бағдарламалау негіздері",
+      "databases": "Дерекқорлар",
+      "booleanLogic": "Бул логикасы",
+      "networks": "Компьютерлік желілер"
+    }
   }
 }

@@ -1,18 +1,35 @@
 <script setup>
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+import { computed } from "vue";
 
-import { useUiStore } from "../../stores/ui";
-import { useAuthStore } from "../../stores/auth";
+import { useUiStore } from "@/stores/ui";
+import { useAuthStore } from "@/stores/auth";
+import { loadLocale } from "@/i18n";
 
-import BaseButton from "../atoms/BaseButton.vue";
+import BaseButton from "@/components/atoms/BaseButton.vue";
 
+const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
 
 const ui = useUiStore();
 const auth = useAuthStore();
 
+// Текущая локаль берём из префикса
+const locale = computed(() => (route.params.locale || "ru").toString());
+
+// Переход с сохранением хвоста пути (после /:locale)
+async function switchLocale(next) {
+  if (next === locale.value) return;
+  const rest = route.fullPath.replace(/^\/(ru|kk|en)/, ""); // убираем старый префикс
+  await loadLocale(next); // лениво подгружаем переводы
+  localStorage.setItem("locale", next);
+  document.documentElement.setAttribute("lang", next);
+  router.push(`/${next}${rest || ""}`);
+}
+
+// Логаут/логин с учётом локали
 async function onAuthClick() {
   if (auth.isAuthenticated) {
     const ok = await ui.confirm({
@@ -23,11 +40,11 @@ async function onAuthClick() {
     });
     if (ok) {
       auth.logout();
-      ui.toast.info("Вы вышли из аккаунта");
-      router.replace({ name: "login" });
+      ui.toast.info(t("auth.logged_out"));
+      router.replace({ name: "login", params: { locale: locale.value } });
     }
   } else {
-    router.push({ name: "login" });
+    router.push({ name: "login", params: { locale: locale.value } });
   }
 }
 </script>
@@ -35,17 +52,31 @@ async function onAuthClick() {
 <template>
   <header class="hdr">
     <div class="tabs">
-      <router-link to="/">{{ t("common.dashboard") }}</router-link>
-      <router-link to="/tests">{{ t("common.tests") }}</router-link>
-      <router-link to="/subjects">{{ t("common.subjects") }}</router-link>
-      <router-link to="/forum">{{ t("common.forum") }}</router-link>
+      <router-link :to="{ name: 'dashboard', params: { locale } }" end>
+        {{ t("common.dashboard") }}
+      </router-link>
+      <router-link :to="{ name: 'tests', params: { locale } }" end>
+        {{ t("common.tests") }}
+      </router-link>
+      <router-link :to="{ name: 'subjects', params: { locale } }" end>
+        {{ t("common.subjects") }}
+      </router-link>
+      <router-link :to="{ name: 'forum', params: { locale } }" end>
+        {{ t("common.forum") }}
+      </router-link>
     </div>
+
     <div class="right">
-      <select v-model="ui.locale" class="lang">
+      <select
+        :value="locale"
+        class="lang"
+        @change="switchLocale($event.target.value)"
+      >
         <option value="ru">RU</option>
-        <option value="kz">KZ</option>
+        <option value="kk">KK</option>
         <option value="en">EN</option>
       </select>
+
       <BaseButton size="sm" variant="ghost" @click="onAuthClick">
         {{ auth.isAuthenticated ? "→" : t("auth.login") }}
       </BaseButton>
@@ -71,7 +102,7 @@ async function onAuthClick() {
   border-radius: var(--radius-sm);
   color: var(--muted);
 }
-.tabs a.router-link-active {
+.tabs a.router-link-exact-active {
   background: var(--card);
   color: var(--text);
   border: 1px solid var(--border);
@@ -80,10 +111,6 @@ async function onAuthClick() {
   display: flex;
   gap: var(--s-3);
   align-items: center;
-}
-.user {
-  color: var(--muted);
-  font-size: var(--fz-14);
 }
 .lang {
   background: var(--bg);

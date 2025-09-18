@@ -32,5 +32,50 @@
     "text_exit": "Log out of account?",
     "ok": "OK",
     "cancel": "Cancel"
+  },
+  "dashboard": {
+    "title": "Add Prompt to Generate your Questions",
+    "pick_subject": "Select a subject",
+    "pick_subject_first": "Please select a subject first.",
+    "soon": "Soon",
+    "add_prompt_image": "Add Prompt image",
+    "prompt_using_image": "Prompt using image",
+    "topics": "Topics",
+    "question_type": "Question Type",
+    "type_single": "Один правильный ответ",
+    "type_multi": "Несколько правильных ответов",
+    "type_context": "Контекстные вопросы",
+    "type_mcq": "Multiple choice",
+    "type_open": "Open answer",
+    "prompt_placeholder": "Write prompt + description to generate question!",
+    "generate": "Generate"
+  },
+  "subjects": {
+    "math": "Mathematics",
+    "cs": "Informatics",
+    "physics": "Physics",
+    "chemistry": "Chemistry",
+    "biology": "Biology",
+    "history": "History",
+    "geography": "Geography",
+    "english": "English"
+  },
+  "topics": {
+    "math": {
+      "algebra": "Algebra",
+      "geometry": "Geometry",
+      "trigonometry": "Trigonometry",
+      "calculus": "Calculus",
+      "probstat": "Probability & Statistics",
+      "numberTheory": "Number Theory"
+    },
+    "cs": {
+      "algorithms": "Algorithms",
+      "dataStructures": "Data Structures",
+      "programmingBasics": "Programming Basics",
+      "databases": "Databases",
+      "booleanLogic": "Boolean Logic",
+      "networks": "Computer Networks"
+    }
   }
 }
