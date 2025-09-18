@@ -1,6 +1,6 @@
 # UNT Prep — Frontend
 
-Одностраничное приложение для подготовки к ЕНТ. Локализовано (ru/kk/en), приватные страницы под логином, единый подход к локализованным ссылкам и роутам.
+Одностраничное приложение для подготовки к ЕНТ. Локализация `ru/kk/en`, URL с префиксом локали, приватные роуты под логином, ролевой доступ (**student / teacher / parent / admin**), единый способ локализовать ссылки и переходы.
 
 ---
 
@@ -34,15 +34,14 @@ src/
   assets/
     icons/
   components/
-    atoms/             # базовые UI-атомы (BaseButton, BaseCard, BaseInput, BaseTag)
+    atoms/             # BaseButton, BaseCard, BaseInput, BaseTag …
     i18n/
       LocalizedLink.vue
     layout/
       AppHeader.vue
       AppSidebar.vue
-    ui/                # переиспользуемые UI-молекулы (UILoader, UIToast, UITopBarProgress …)
+    ui/                # UILoader, UIToast, UITopBarProgress …
   composables/
-    useAuth.js         # (эскиз) авторизация-утилиты
     useL10nRoute.js    # локализатор маршрутов (push/replace/l10nTo)
   i18n/
     index.js           # createI18n + lazy-load JSON
@@ -51,7 +50,7 @@ src/
       kk.json
       en.json
   layout/
-    LocaleView.vue     # host для "детей" внутри /:locale
+    LocaleView.vue     # host для детей внутри /:locale
   lib/
     http.js            # (эскиз) axios-инстанс
   pages/
@@ -61,36 +60,44 @@ src/
     Forum.vue
     Login.vue
     Register.vue
+    admin/
+      Index.vue
+      Dashboard.vue
+      Users.vue
+      Roles.vue
+    teacher/
+      Index.vue
+      Classes.vue
+      Results.vue
+    parent/
+      Index.vue
+      Children.vue
+      Results.vue
   router/
-    index.js           # маршруты + навигационные гарды
+    index.js
   stores/
-    auth.js            # pinia: { user, token, roles, isAuthenticated, login, logout }
+    auth.js            # pinia: { user:{name,email,role}, token, isAuthenticated, login, logout }
     ui.js              # pinia: топбар/тосты/confirm
   styles/
-    base.css           # базовые стили (reset/типографика по желанию)
-    variables.css      # CSS-переменные темы: --bg, --card, --border, --text, --muted, --accent-color
+    base.css
+    variables.css      # CSS-переменные: --bg, --card, --border, --text, --muted, --accent-color
   App.vue
   main.js
 ```
 
-**Конвенции импортов (строго):**
+**Порядок импортов (строго):**
 
-1. Libraries → 2) Actions/Composables/Helpers → 3) Components/Atoms/UI → 4) Local state.
-
-**Именование:**
-
-- Компонент локализованных ссылок: `LocalizedLink` (не LLink).
-- Не используем однобуквенные переменные — вместо `l` пишем `localeCode`, `currentLocale` и т.п.
+1. **Libraries** → 2) **Actions/Composables/Helpers** → 3) **Components/Atoms/UI** → 4) **Local state**.  
+   **Именование:** компонент локализованных ссылок — `LocalizedLink` (не `LLink`). Избегаем коротких переменных — используем `localeCode`, `currentLocale` и т.п.
 
 ---
 
 ## i18n
 
-`src/i18n/index.js` (ленивая загрузка JSON и установка `<html lang>` вызывается из гарда):
+`src/i18n/index.js` — ленивая загрузка JSON, активная локаль хранится в `localStorage` и проставляется в `<html lang>` из гарда.
 
 ```js
 import { createI18n } from "vue-i18n";
-
 const fallbackLocale = "ru";
 const saved = localStorage.getItem("locale") || fallbackLocale;
 
@@ -112,139 +119,33 @@ export async function loadLocale(localeCode) {
 }
 ```
 
-**Локали:** `ru.json`, `kk.json`, `en.json` (ключи: `app.*`, `auth.*`, `common.*`, `dashboard.*`, `subjects.*`, `topics.*`).
+**Ключи** (минимум): `app.*`, `auth.*`, `common.*`, `roles.*`, `admin.*`, `teacher.*`, `parent.*`, `dashboard.*`, `subjects.*`, `topics.*`.
 
----
+Актуальный `ru.json` (фрагмент):
 
-## Роутер (+ гарды)
-
-`src/router/index.js` — текущая версия (из проекта):
-
-```js
-import { createRouter, createWebHistory } from "vue-router";
-import { useAuthStore } from "../stores/auth";
-import { useUiStore } from "../stores/ui";
-import { i18n, loadLocale } from "../i18n";
-
-// страницы
-import Dashboard from "../pages/Dashboard.vue";
-import Subjects from "../pages/Subjects.vue";
-import Forum from "../pages/Forum.vue";
-import Tests from "../pages/Tests.vue";
-import Login from "../pages/Login.vue";
-import Register from "../pages/Register.vue";
-import LocaleView from "../layout/LocaleView.vue";
-
-// Поддерживаемые локали
-export const supportedLocales = ["ru", "kk", "en"];
-export const LOCALE_RE = "ru|kk|en";
-
-// Определить локаль по saved/navigator
-function getSavedOrDefaultLocale() {
-  const saved = localStorage.getItem("locale");
-  if (saved && supportedLocales.includes(saved)) return saved;
-  const navigatorLang = (navigator.language || "ru").toLowerCase();
-  if (navigatorLang.startsWith("kk")) return "kk";
-  if (navigatorLang.startsWith("en")) return "en";
-  return "ru";
+```json
+{
+  "roles": {
+    "admin": "Администратор",
+    "student": "Ученик",
+    "teacher": "Преподаватель",
+    "parent": "Родитель"
+  },
+  "admin": {
+    "section": "Главный админ",
+    "open": "Администрирование",
+    "dashboard": "Панель администратора",
+    "users": "Пользователи",
+    "roles": "Роли и доступ"
+  },
+  "teacher": {
+    "classes": "Мои классы",
+    "assignments": "Назначения",
+    "qbank": "Банк вопросов",
+    "results": "Результаты"
+  },
+  "parent": { "children": "Мои дети", "results": "Результаты" }
 }
-
-const routes = [
-  { path: "/", redirect: () => `/${getSavedOrDefaultLocale()}` },
-  { path: "/login", redirect: () => `/${getSavedOrDefaultLocale()}/login` },
-  {
-    path: "/register",
-    redirect: () => `/${getSavedOrDefaultLocale()}/register`,
-  },
-  {
-    path: `/:locale(${LOCALE_RE})`,
-    component: LocaleView,
-    children: [
-      {
-        path: "login",
-        name: "login",
-        component: Login,
-        meta: { requiresAuth: false, layout: "auth" },
-      },
-      {
-        path: "register",
-        name: "register",
-        component: Register,
-        meta: { requiresAuth: false, layout: "auth" },
-      },
-      { path: "", name: "dashboard", component: Dashboard },
-      { path: "subjects", name: "subjects", component: Subjects },
-      { path: "forum", name: "forum", component: Forum },
-      { path: "tests", name: "tests", component: Tests },
-    ],
-  },
-  { path: "/:pathMatch(.*)*", redirect: () => `/${getSavedOrDefaultLocale()}` },
-];
-
-const router = createRouter({ history: createWebHistory(), routes });
-
-// ===== Guards =====
-router.beforeEach(async (to) => {
-  const ui = useUiStore();
-  ui.startTopbar();
-
-  // 1) локаль
-  const localeParam = to.params.locale;
-  if (localeParam && !supportedLocales.includes(String(localeParam))) {
-    return { path: `/${getSavedOrDefaultLocale()}` };
-  }
-  if (localeParam && i18n.global.locale.value !== localeParam) {
-    await loadLocale(String(localeParam));
-    localStorage.setItem("locale", String(localeParam));
-    document.documentElement.setAttribute("lang", String(localeParam));
-  }
-
-  // 2) auth
-  const auth = useAuthStore();
-  const isAuthPage = to.name === "login" || to.name === "register";
-  if (isAuthPage && auth.isAuthenticated) {
-    return { name: "dashboard", params: { locale: localeParam } };
-  }
-  const needsAuth = to.meta.requiresAuth !== false; // default: private
-  if (needsAuth && !isAuthPage && !auth.isAuthenticated) {
-    return {
-      name: "login",
-      params: { locale: localeParam || getSavedOrDefaultLocale() },
-      query: { redirect: to.fullPath },
-    };
-  }
-
-  // 3) (опционально) роли
-  const requiredRoles = to.meta?.roles;
-  if (requiredRoles && !requiredRoles.some((r) => auth.roles.includes(r))) {
-    return {
-      name: "dashboard",
-      params: { locale: localeParam },
-      query: { denied: 1 },
-    };
-  }
-});
-
-router.afterEach(() => {
-  useUiStore().finishTopbar();
-});
-router.onError(() => {
-  useUiStore().failTopbar();
-});
-
-export default router;
-```
-
-**LocaleView\.vue** — через render (runtime-only):
-
-```vue
-<script setup>
-import { h } from "vue";
-</script>
-<template>
-  <!-- Фактически это render: () => h('router-view')  -->
-  <router-view />
-</template>
 ```
 
 ---
@@ -253,24 +154,19 @@ import { h } from "vue";
 
 ### Компонент `LocalizedLink`
 
-`src/components/i18n/LocalizedLink.vue` — обёртка над `<RouterLink>`.
+`src/components/i18n/LocalizedLink.vue` — обёртка над `<RouterLink>`, автоматически добавляет префикс текущей локали, поддерживает именованные и строковые пути, внешние ссылки — как есть.
 
-**Usage**
+**Пример**
 
 ```vue
-<!-- Именованный роут (точная активность для дашборда) -->
 <LocalizedLink
   :to="{ name: 'dashboard' }"
   exact-active-class="router-link-exact-active"
 >
   {{ t('common.dashboard') }}
 </LocalizedLink>
-
-<!-- Строковые пути -->
 <LocalizedLink to="tests">{{ t('common.tests') }}</LocalizedLink>
 <LocalizedLink to="/subjects">{{ t('common.subjects') }}</LocalizedLink>
-
-<!-- Внешняя ссылка -->
 <LocalizedLink
   to="https://docs.example.com"
   target="_blank"
@@ -279,27 +175,176 @@ import { h } from "vue";
 
 ### Компосабл `useL10nRoute`
 
-`src/composables/useL10nRoute.js` — локализатор переходов в коде.
-
-**Usage**
+`src/composables/useL10nRoute.js` — локализатор маршрутов в коде.
 
 ```js
-// import { useL10nRoute } from "@/composables/useL10nRoute";
-// const { l10nTo, pushL10n, replaceL10n, localeCode } = useL10nRoute();
-// await pushL10n({ name: "tests" });                  // именованный
-// router.push(l10nTo("subjects"));                    // строка → "/kk/subjects"
-// router.replace(l10nTo("/forum"));                   // абсолютный
-// window.open(l10nTo("https://docs.example.com"), "_blank"); // внешняя — как есть
+/*
+Usage
+import { useL10nRoute } from "@/composables/useL10nRoute";
+const { l10nTo, pushL10n, replaceL10n, localeCode } = useL10nRoute();
+await pushL10n({ name: "tests" });
+router.push(l10nTo("subjects"));      // → "/kk/subjects"
+router.replace(l10nTo("/forum"));     // абсолютный
+window.open(l10nTo("https://docs.example.com"), "_blank");
+*/
 ```
 
 ---
 
-## Сайдбар и хедер
+## Роутер и навигационные гарды
 
-- `AppSidebar.vue` — использует `LocalizedLink`, i18n-тексты, точная активность для дашборда.
-- `AppHeader.vue` — табы, переключатель языка (`ru/kk/en`), логин/логаут. Все переходы локализованы.
+Все приватные страницы под `/:locale(ru|kk|en)`.
 
-**Стиль кликабельных элементов** (утилита):
+Главные правила:
+
+- `/` → редирект на сохранённую/дефолтную локаль
+- публичные: `/:locale/login`, `/:locale/register`
+- приватные: `/:locale`, `/:locale/subjects`, `/:locale/tests`, `/:locale/forum`
+- роль-доступ через `meta.roles` и проверку в `beforeEach`
+
+**Фрагмент `src/router/index.js` (с доп. модулями админа/препода/родителя):**
+
+```js
+{
+  path: ":/locale(ru|kk|en)",
+  component: LocaleView,
+  children: [
+    { path: "login",    name: "login",    component: Login,    meta: { requiresAuth: false, layout: "auth" } },
+    { path: "register", name: "register", component: Register, meta: { requiresAuth: false, layout: "auth" } },
+
+    // приватные базовые
+    { path: "",          name: "dashboard", component: Dashboard },
+    { path: "subjects",  name: "subjects",  component: Subjects },
+    { path: "forum",     name: "forum",     component: Forum },
+    { path: "tests",     name: "tests",     component: Tests },
+
+    // admin (только admin)
+    {
+      path: "admin",
+      component: () => import("@/pages/admin/Index.vue"),
+      meta: { roles: ["admin"] },
+      children: [
+        { path: "",       name: "admin-home",  component: () => import("@/pages/admin/Dashboard.vue"), meta: { roles: ["admin"] } },
+        { path: "users",  name: "admin-users", component: () => import("@/pages/admin/Users.vue"),     meta: { roles: ["admin"] } },
+        { path: "roles",  name: "admin-roles", component: () => import("@/pages/admin/Roles.vue"),     meta: { roles: ["admin"] } },
+      ],
+    },
+
+    // teacher (teacher и admin)
+    {
+      path: "teacher",
+      component: () => import("@/pages/teacher/Index.vue"),
+      meta: { roles: ["teacher", "admin"] },
+      children: [
+        { path: "classes", name: "teacher-classes", component: () => import("@/pages/teacher/Classes.vue") },
+        { path: "results", name: "teacher-results", component: () => import("@/pages/teacher/Results.vue") },
+      ],
+    },
+
+    // parent (parent и admin)
+    {
+      path: "parent",
+      component: () => import("@/pages/parent/Index.vue"),
+      meta: { roles: ["parent", "admin"] },
+      children: [
+        { path: "children", name: "parent-children", component: () => import("@/pages/parent/Children.vue") },
+        { path: "results",  name: "parent-results",  component: () => import("@/pages/parent/Results.vue") },
+      ],
+    },
+  ],
+}
+```
+
+**Проверка роли в `beforeEach`:**
+
+```js
+const auth = useAuthStore();
+const needRoles = to.meta?.roles;
+if (needRoles && !needRoles.includes(auth.role?.value ?? auth.role)) {
+  return {
+    name: "dashboard",
+    params: { locale: to.params.locale },
+    query: { denied: 1 },
+  };
+}
+```
+
+---
+
+## Авторизация (Pinia)
+
+`src/stores/auth.js` — хранит **одну роль** в `user.role` (упростили модель). Всё состояние переживает F5 (persist в `localStorage`).
+
+Особенности mvp:
+
+- Временная мапа ролей по email (для демо):
+  - `asan@gmail.com` → `admin`
+  - `asan-st@gmail.com` → `student`
+  - `asan-t@gmail.com` → `teacher`
+  - `asan-p@gmail.com` → `parent`
+  - прочие → `student`
+- **TODO удалить перед продом**, роли должны приходить с бэка.
+
+API стора (минимум):
+
+- `user: { name, email, role } | null`
+- `token: string | null`
+- `isAuthenticated: boolean`
+- `login({ email, password })`
+- `register({ name, email, password })`
+- `logout()`
+- `role` (computed), `hasRole(role)`, `hasAnyRole(list)`
+
+---
+
+## Сайдбар и роли
+
+### Teacher
+
+Если роль `teacher` (или `admin`), **перед** «Дэшборд» показываем:
+
+- «Мои классы» (`teacher-classes`)
+- «Результаты» (`teacher-results`)
+
+### Parent
+
+Если роль `parent` (или `admin`), **перед** «Дэшборд» показываем:
+
+- «Мои дети» (`parent-children`)
+- «Результаты» (`parent-results`)
+
+### Admin
+
+Внизу сайдбара — кнопка «Администрирование». По клику открывается всплывающая панель со ссылками:
+
+- Admin Dashboard (`admin-home`)
+- Users (`admin-users`)
+- Roles (`admin-roles`)
+
+Панель закрывается по клику вне, позиционируется над кнопкой.
+
+---
+
+## Хедер (язык + мини-профиль)
+
+Справа: селект языка (RU/KK/EN), рядом мини-профиль (имя + строка роли), кнопка `→` для логаута. Когда не залогинен — кнопка «Вход».
+
+Отображение роли берём из i18n: `t('roles.' + (auth.role || 'student'))`.
+
+---
+
+## Дашборд — UX (MVP)
+
+- Сначала выбор предмета (активны: **Математика**, **Информатика**; остальные — disabled с бейджем «Скоро»)
+- После выбора — список тем (чипсы), мультивыбор
+- Типы вопросов: `type_single` | `type_multi` | `type_context`
+- Текстовая область под промпт + контекст, кнопка «Сгенерировать» (пока тост)
+
+Стили кликабельных элементов — через утилиту `.clickable` и модификатор `.is-active`.
+
+---
+
+## CSS-утилиты (фрагмент)
 
 ```css
 .clickable {
@@ -326,58 +371,19 @@ import { h } from "vue";
 
 ---
 
-## Дашборд — текущая логика
-
-- Выбор **предмета** (активны: Математика, Информатика; прочие disabled c бейджем «Скоро»).
-- После выбора — **темы** (чипсы), множественный выбор.
-- **Тип вопроса**: `single` (one answer), `multi` (multi answer), `context` (context questions).
-- Textarea для промпта + кнопка «Генерация». Пока действия — через `ui.toast`.
-- Все тексты — через i18n, включая казахский.
-
----
-
-## Роли / доступ (актуально сейчас)
-
-- **Guest** — `/:locale/login`, `/:locale/register`.
-- **Student** — `/:locale` (dashboard), `subjects`, `tests`, `forum`, `profile (план)`.
-- **Parent** — в планах (`/:locale/parent/*`).
-- **Teacher | Moderator** — в планах (модерация форума, группы/сеты тестов).
-- **Admin** — в планах (users/roles/limits/settings).
-
-> Роль **Content Author** — **пока не используем**.
-
----
-
-## Сторы (эскизы)
-
-`stores/auth.js` — минимально: `user`, `token`, `roles`, `isAuthenticated`, `login()`, `logout()`.
-`stores/ui.js` — глобальный топбар, тосты, confirm-заглушка (можно заменить на модальное окно в `components/ui`).
-
----
-
 ## Дорожная карта (кратко)
 
-1. **Profile** и **Analytics** (скелет страниц)
-2. **Forum**: create/reply, простая модерация
-3. **Tests**: список/фильтры, `sessions/:id`, `review`, `history`
-4. **Parent**: каркас дашборда
-5. **Admin**: users/roles (UI)
-6. Генерация вопросов — интеграция с бэком, сохранение наборов
-7. Персист выбора `subject/topics/type` (Pinia + localStorage)
+1. Teacher → Assignments & QBank (формы, списки)
+2. Parent → Results (фильтры по ребёнку), Schedule
+3. Tests → сессия/ревью/история
+4. Admin → Users/Roles (минимальная логика)
+5. Генерация вопросов → интеграция с бэком
+6. Персист выбора `subject/topics/type` в Pinia/LS
 
 ---
 
 ## FAQ
 
-- **Почему дашборд выделялся активным на `/forum`?** Используем точную активность: класс `router-link-exact-active`.
-- **Почему `LocaleView` — компонент, а не `template` строкой?** Runtime-only сборка Vue. Через `LocaleView.vue` избегаем требования runtime-компилятора.
-- **Где настраивать цвет подсветки?** Через CSS-переменную `--accent-color` (в `styles/variables.css`).
-
----
-
-## Правила PR/тасков (минимум)
-
-- Новые страницы добавлять под `/:locale` и сразу снабжать i18n-ключами.
-- Все ссылки/переходы — через `LocalizedLink` или `useL10nRoute()`.
-- Не использовать однобуквенные переменные; `localeCode` вместо `l`.
-- В роутере указывать `meta.roles` там, где нужен ролевой доступ (в будущем).
+- **Почему раньше “Dashboard” подсвечивался везде?** Исправлено: используем точный класс `router-link-exact-active`.
+- **Почему локали из JSON не подтягивались?** Включена ленивая загрузка и установка `<html lang>` в гардe.
+- **Почему роль “слетала” после F5?** Состояние `user`/`token` сохраняем в `localStorage`, роль хранится в `user.role`.
