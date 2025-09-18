@@ -1,25 +1,54 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
-// моковая «БД» пользователей в localStorage
+/** mock "БД" в LS */
 function getUsers() {
   return JSON.parse(localStorage.getItem("users") || "[]");
 }
-function setUsers(u) {
-  localStorage.setItem("users", JSON.stringify(u));
+function setUsers(users) {
+  localStorage.setItem("users", JSON.stringify(users));
 }
 
+// TODO: убрать перед продом
+const ROLE_BY_EMAIL = {
+  "asan@gmail.com": "admin",
+  "asan-st@gmail.com": "student",
+  "asan-t@gmail.com": "teacher",
+  "asan-p@gmail.com": "parent",
+};
+
+const LS_TOKEN = "token";
+const LS_USER = "user"; // { name, email, role }
+
 export const useAuthStore = defineStore("auth", () => {
-  const user = ref(null); // { name, email }
-  const token = ref(localStorage.getItem("token") || null);
+  // ==== инициализация из LS ====
+  const token = ref(localStorage.getItem(LS_TOKEN) || null);
+  const user = ref(JSON.parse(localStorage.getItem(LS_USER) || "null")); // {name,email,role}|null
+
+  // миграция старого формата (если вдруг был user без role, либо отдельные roles[])
+  if (user.value && !user.value.role) {
+    // попытка угадать по email
+    const guessed =
+      ROLE_BY_EMAIL[(user.value.email || "").toLowerCase()] || "student";
+    user.value = { ...user.value, role: guessed };
+    localStorage.setItem(LS_USER, JSON.stringify(user.value));
+  }
 
   const isAuthenticated = computed(() => !!token.value);
+  const role = computed(() => user.value?.role || "student");
 
-  function _setSession({ token: t, user: u }) {
-    token.value = t;
-    user.value = u;
-    if (t) localStorage.setItem("token", t);
-    else localStorage.removeItem("token");
+  function persist() {
+    if (token.value) localStorage.setItem(LS_TOKEN, token.value);
+    else localStorage.removeItem(LS_TOKEN);
+
+    if (user.value) localStorage.setItem(LS_USER, JSON.stringify(user.value));
+    else localStorage.removeItem(LS_USER);
+  }
+
+  function _setSession({ tokenValue, userValue }) {
+    token.value = tokenValue || null;
+    user.value = userValue || null;
+    persist();
   }
 
   async function register({ name, email, password }) {
@@ -27,7 +56,9 @@ export const useAuthStore = defineStore("auth", () => {
     const users = getUsers();
     if (users.find((u) => u.email === email))
       throw new Error("Пользователь уже существует");
-    users.push({ name, email, password }); // пароли без хэша — только для мока!
+
+    const roleForUser = ROLE_BY_EMAIL[email.toLowerCase()] || "student";
+    users.push({ name, email, password, role: roleForUser }); // пароли не хэшируем — только для демо
     setUsers(users);
     return true;
   }
@@ -38,14 +69,39 @@ export const useAuthStore = defineStore("auth", () => {
       (u) => u.email === email && u.password === password
     );
     if (!found) throw new Error("Неверный email или пароль");
-    const t = "mock-" + Math.random().toString(36).slice(2, 8);
-    _setSession({ token: t, user: { name: found.name, email: found.email } });
+
+    const roleForUser =
+      found.role || ROLE_BY_EMAIL[email.toLowerCase()] || "student";
+    const tokenValue = "mock-" + Math.random().toString(36).slice(2, 8);
+
+    _setSession({
+      tokenValue,
+      userValue: { name: found.name, email: found.email, role: roleForUser },
+    });
     return true;
   }
 
   function logout() {
-    _setSession({ token: null, user: null });
+    _setSession({ tokenValue: null, userValue: null });
   }
 
-  return { user, token, isAuthenticated, register, login, logout };
+  // Хелперы
+  function hasRole(expected) {
+    return role.value === expected;
+  }
+  function hasAnyRole(list) {
+    return list.includes(role.value);
+  }
+
+  return {
+    user,
+    role,
+    token,
+    isAuthenticated,
+    register,
+    login,
+    logout,
+    hasRole,
+    hasAnyRole,
+  };
 });

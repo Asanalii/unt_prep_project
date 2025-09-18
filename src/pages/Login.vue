@@ -1,14 +1,18 @@
 <script setup>
+// ===== Libraries
 import { ref } from "vue";
-import { useRoute, useRouter, RouterLink } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 
-import { useAuthStore } from "../stores/auth";
-import { useUiStore } from "../stores/ui";
+// ===== Stores
+import { useAuthStore } from "@/stores/auth";
+import { useUiStore } from "@/stores/ui";
 
-import BaseCard from "../components/atoms/BaseCard.vue";
-import BaseInput from "../components/atoms/BaseInput.vue";
-import BaseButton from "../components/atoms/BaseButton.vue";
+// ===== UI
+import BaseCard from "@/components/atoms/BaseCard.vue";
+import BaseInput from "@/components/atoms/BaseInput.vue";
+import BaseButton from "@/components/atoms/BaseButton.vue";
+import LocalizedLink from "@/i18n/LocalizedLink.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -23,10 +27,9 @@ const loading = ref(false);
 const error = ref("");
 
 async function onSubmit() {
-  ui.setLoading(true, "Входим…");
+  ui.setLoading(true, t("auth.entering"));
   try {
     await auth.login({ email: email.value, password: password.value });
-
     ui.toast.success(t("toast.welcome"));
     router.replace((route.query.redirect || "/") + "");
   } catch (e) {
@@ -40,7 +43,6 @@ async function onSubmit() {
 <template>
   <BaseCard class="card">
     <h2>{{ t("auth.login") }}</h2>
-
     <p class="muted">{{ t("auth.welcome_back") }}</p>
 
     <div class="field">
@@ -49,18 +51,18 @@ async function onSubmit() {
     </div>
     <div class="field">
       <label>{{ t("auth.password") }}</label>
-
       <BaseInput v-model="password" type="password" placeholder="••••••••" />
     </div>
 
     <p v-if="error" class="err">{{ error }}</p>
+
     <BaseButton :disabled="loading" @click="onSubmit">
       {{ loading ? t("auth.entering") : t("auth.enter") }}
     </BaseButton>
 
     <p class="swap">
       {{ t("auth.no_account") }}
-      <RouterLink to="/register">{{ t("auth.go_register") }}</RouterLink>
+      <LocalizedLink to="register">{{ t("auth.go_register") }}</LocalizedLink>
     </p>
   </BaseCard>
 </template>

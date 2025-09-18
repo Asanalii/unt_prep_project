@@ -1,13 +1,14 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
-import { computed } from "vue";
+import { computed, unref } from "vue";
 
 import { useUiStore } from "@/stores/ui";
 import { useAuthStore } from "@/stores/auth";
 import { loadLocale } from "@/i18n";
 
 import BaseButton from "@/components/atoms/BaseButton.vue";
+import LocalizedLink from "../../i18n/LocalizedLink.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -16,20 +17,34 @@ const { t } = useI18n();
 const ui = useUiStore();
 const auth = useAuthStore();
 
-// Текущая локаль берём из префикса
+// текущая локаль из префикса
 const locale = computed(() => (route.params.locale || "ru").toString());
 
-// Переход с сохранением хвоста пути (после /:locale)
+// имя и роль для отображения
+const userName = computed(() => {
+  const name = auth.user?.name;
+  if (name && name.trim().length) return name;
+  const email = auth.user?.email || "";
+  return email ? email.split("@")[0] : "";
+});
+
+const roleLabel = computed(() => {
+  const role = auth.role || "student";
+
+  return t(`roles.${role}`);
+});
+
+// смена языка с сохранением хвоста пути
 async function switchLocale(next) {
   if (next === locale.value) return;
-  const rest = route.fullPath.replace(/^\/(ru|kk|en)/, ""); // убираем старый префикс
-  await loadLocale(next); // лениво подгружаем переводы
+  const rest = route.fullPath.replace(/^\/(ru|kk|en)/, "");
+  await loadLocale(next);
   localStorage.setItem("locale", next);
   document.documentElement.setAttribute("lang", next);
   router.push(`/${next}${rest || ""}`);
 }
 
-// Логаут/логин с учётом локали
+// логин/логаут
 async function onAuthClick() {
   if (auth.isAuthenticated) {
     const ok = await ui.confirm({
@@ -40,7 +55,7 @@ async function onAuthClick() {
     });
     if (ok) {
       auth.logout();
-      ui.toast.info(t("auth.logged_out"));
+      ui.toast.info(t("toast.logout") || t("auth.logged_out"));
       router.replace({ name: "login", params: { locale: locale.value } });
     }
   } else {
@@ -52,21 +67,22 @@ async function onAuthClick() {
 <template>
   <header class="hdr">
     <div class="tabs">
-      <router-link :to="{ name: 'dashboard', params: { locale } }" end>
+      <LocalizedLink :to="{ name: 'dashboard' }">
         {{ t("common.dashboard") }}
-      </router-link>
-      <router-link :to="{ name: 'tests', params: { locale } }" end>
+      </LocalizedLink>
+      <LocalizedLink :to="{ name: 'tests' }">
         {{ t("common.tests") }}
-      </router-link>
-      <router-link :to="{ name: 'subjects', params: { locale } }" end>
+      </LocalizedLink>
+      <LocalizedLink :to="{ name: 'subjects' }">
         {{ t("common.subjects") }}
-      </router-link>
-      <router-link :to="{ name: 'forum', params: { locale } }" end>
+      </LocalizedLink>
+      <LocalizedLink :to="{ name: 'forum' }">
         {{ t("common.forum") }}
-      </router-link>
+      </LocalizedLink>
     </div>
 
     <div class="right">
+      <!-- язык -->
       <select
         :value="locale"
         class="lang"
@@ -77,6 +93,13 @@ async function onAuthClick() {
         <option value="en">EN</option>
       </select>
 
+      <!-- мини-профиль (только когда залогинен) -->
+      <div v-if="auth.isAuthenticated" class="usercard">
+        <h3 class="username" :title="userName">{{ userName }}</h3>
+        <span class="role">{{ roleLabel }}</span>
+      </div>
+
+      <!-- кнопка вход/выход -->
       <BaseButton size="sm" variant="ghost" @click="onAuthClick">
         {{ auth.isAuthenticated ? "→" : t("auth.login") }}
       </BaseButton>
@@ -107,6 +130,7 @@ async function onAuthClick() {
   color: var(--text);
   border: 1px solid var(--border);
 }
+
 .right {
   display: flex;
   gap: var(--s-3);
@@ -118,6 +142,27 @@ async function onAuthClick() {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 6px 8px;
-  margin-right: 8px;
+  margin-right: 4px;
+}
+
+/* мини-профиль справа от селекта языка */
+.usercard {
+  display: grid;
+  line-height: 1.1;
+  margin-right: 4px;
+}
+.username {
+  margin: 0;
+  font-size: var(--fz-14);
+  font-weight: 600;
+  color: var(--text);
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.role {
+  font-size: var(--fz-12);
+  color: var(--muted);
 }
 </style>

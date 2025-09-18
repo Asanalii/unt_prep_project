@@ -68,7 +68,12 @@ const routes = [
       { path: "", name: "dashboard", component: Dashboard }, // "/:locale"
       { path: "subjects", name: "subjects", component: Subjects },
       { path: "forum", name: "forum", component: Forum },
-      { path: "tests", name: "tests", component: Tests },
+      {
+        path: "tests",
+        name: "tests",
+        component: Tests,
+        meta: { roles: ["student", "teacher", "admin"] },
+      },
     ],
   },
 
@@ -97,6 +102,15 @@ router.beforeEach(async (to) => {
 
   // 2) auth-логика
   const auth = useAuthStore();
+  const requiredRoles = to.meta?.roles;
+  if (requiredRoles && !requiredRoles.includes(auth.role)) {
+    return {
+      name: "dashboard",
+      params: { locale: to.params.locale },
+      query: { denied: 1 },
+    };
+  }
+
   const isAuthPage = to.name === "login" || to.name === "register";
   if (isAuthPage && auth.isAuthenticated) {
     return { name: "dashboard", params: { locale } };

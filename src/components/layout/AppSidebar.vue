@@ -1,7 +1,5 @@
 <script setup>
 // ===== Libraries
-import { computed } from "vue";
-import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 
 // ===== Components / Atoms / UI
@@ -9,9 +7,7 @@ import BaseTag from "@/components/atoms/BaseTag.vue";
 import LocalizedLink from "../../i18n/LocalizedLink.vue";
 
 // ===== Local
-const route = useRoute();
 const { t } = useI18n();
-const locale = computed(() => (route.params.locale || "ru").toString());
 </script>
 
 <template>
@@ -46,42 +42,6 @@ const locale = computed(() => (route.params.locale || "ru").toString());
         <BaseTag tone="success">{{ t("app.beta") }}</BaseTag>
       </li>
     </ul>
-    <!-- <ul class="menu">
-      <li>
-        <router-link
-          :to="{ name: 'dashboard', params: { locale } }"
-          class="item"
-          exact-active-class="is-exact-active"
-        >
-          {{ t("common.dashboard") }}
-        </router-link>
-      </li>
-
-      <li>
-        <router-link :to="{ name: 'tests', params: { locale } }" class="item">
-          {{ t("common.tests") }}
-        </router-link>
-      </li>
-
-      <li>
-        <router-link
-          :to="{ name: 'subjects', params: { locale } }"
-          class="item"
-        >
-          {{ t("common.subjects") }}
-        </router-link>
-      </li>
-
-      <li>
-        <router-link :to="{ name: 'forum', params: { locale } }" class="item">
-          {{ t("common.forum") }}
-        </router-link>
-      </li>
-
-      <li class="mt">
-        <BaseTag tone="success">{{ t("app.beta") }}</BaseTag>
-      </li>
-    </ul> -->
   </nav>
 </template>
 
