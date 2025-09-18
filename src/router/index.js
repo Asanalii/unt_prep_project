@@ -66,13 +66,90 @@ const routes = [
 
       // приватные
       { path: "", name: "dashboard", component: Dashboard }, // "/:locale"
+
       { path: "subjects", name: "subjects", component: Subjects },
+
       { path: "forum", name: "forum", component: Forum },
+
       {
         path: "tests",
         name: "tests",
         component: Tests,
         meta: { roles: ["student", "teacher", "admin"] },
+      },
+
+      // teacher
+      {
+        path: "teacher",
+        component: () => import("@/pages/teacher/Index.vue"),
+        meta: { roles: ["teacher", "admin"] },
+        children: [
+          {
+            path: "classes",
+            name: "teacher-classes",
+            component: () => import("@/pages/teacher/Classes.vue"),
+          },
+
+          {
+            path: "results",
+            name: "teacher-results",
+            component: () => import("@/pages/teacher/Results.vue"),
+          },
+
+          // опционально:
+          // { path: "qbank", name: "teacher-qbank", component: () => import("@/pages/teacher/QBank.vue"), },
+          // { path: "grading",  name: "teacher-grading",  component: () => import("@/pages/teacher/Grading.vue") },
+          // { path: "monitor",  name: "teacher-monitor",  component: () => import("@/pages/teacher/Monitor.vue") },
+        ],
+      },
+
+      // parent
+      {
+        path: "parent",
+        component: () => import("@/pages/parent/Index.vue"),
+        meta: { roles: ["parent", "admin"] },
+        children: [
+          {
+            path: "children",
+            name: "parent-children",
+            component: () => import("@/pages/parent/Children.vue"),
+          },
+          {
+            path: "results",
+            name: "parent-results",
+            component: () => import("@/pages/parent/Results.vue"),
+          },
+
+          // можно позже:
+          // { path: "schedule", name: "parent-schedule", component: () => import("@/pages/parent/Schedule.vue") },
+        ],
+      },
+
+      // admin
+      {
+        path: "admin",
+        component: () => import("@/pages/admin/Index.vue"),
+        meta: { roles: ["admin"] },
+        children: [
+          {
+            path: "",
+            name: "admin-home",
+            component: () => import("@/pages/admin/Dashboard.vue"),
+            meta: { roles: ["admin"] },
+          },
+          {
+            path: "users",
+            name: "admin-users",
+            component: () => import("@/pages/admin/Users.vue"),
+            meta: { roles: ["admin"] },
+          },
+          {
+            path: "roles",
+            name: "admin-roles",
+            component: () => import("@/pages/admin/Roles.vue"),
+            meta: { roles: ["admin"] },
+          },
+        ],
       },
     ],
   },
