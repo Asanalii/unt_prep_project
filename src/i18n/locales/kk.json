@@ -1,0 +1,36 @@
+{
+  "app": { "name": "UNT Prep", "beta": "Бета" },
+  "auth": {
+    "login": "Кіру",
+    "register": "Тіркелу",
+    "welcome_back": "Қайта көргенімізге қуаныштымыз.",
+    "create_account": "ҰБТ-ға дайындалу үшін аккаунт құрыңыз.",
+    "email": "Email",
+    "password": "Құпиясөз",
+    "password_repeat": "Құпиясөзді қайталау",
+    "enter": "Кіру",
+    "entering": "Кіріп жатыр…",
+    "signup": "Тіркелу",
+    "signing": "Жасап жатыр…",
+    "no_account": "Аккаунт жоқ па?",
+    "has_account": "Аккаунтыңыз бар ма?",
+    "go_login": "Кіру",
+    "go_register": "Тіркелу"
+  },
+  "common": {
+    "subjects": "Пәндер",
+    "tests": "Тесттер",
+    "forum": "Форум",
+    "dashboard": "Көрсеткіштер",
+    "available": "Қолжетімді",
+    "soon": "Жақында",
+    "duration_m": "Ұзақтығы: {min} мин."
+  },
+  "toast": { "welcome": "Қош келдіңіз!", "logout": "Аккаунттан шықтыңыз" },
+  "confirm": {
+    "title_exit": "Шығу",
+    "text_exit": "Аккаунттан шығасыз ба?",
+    "ok": "Иә",
+    "cancel": "Болдырмау"
+  }
+}

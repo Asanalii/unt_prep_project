@@ -1,0 +1,42 @@
+{
+  "app": {
+    "name": "UNT Prep",
+    "beta": "Бета"
+  },
+  "auth": {
+    "login": "Вход",
+    "register": "Регистрация",
+    "welcome_back": "Рады видеть вас снова.",
+    "create_account": "Создайте аккаунт для подготовки к ЕНТ.",
+    "email": "Email",
+    "password": "Пароль",
+    "password_repeat": "Повтор пароля",
+    "enter": "Войти",
+    "entering": "Входим…",
+    "signup": "Зарегистрироваться",
+    "signing": "Создаём…",
+    "no_account": "Нет аккаунта?",
+    "has_account": "Уже есть аккаунт?",
+    "go_login": "Войти",
+    "go_register": "Зарегистрироваться"
+  },
+  "common": {
+    "subjects": "Предметы",
+    "tests": "Тесты",
+    "forum": "Форум",
+    "dashboard": "Дашборд",
+    "available": "Доступно",
+    "soon": "Скоро",
+    "duration_m": "Длительность: {min} мин."
+  },
+  "toast": {
+    "welcome": "Добро пожаловать!",
+    "logout": "Вы вышли из аккаунта"
+  },
+  "confirm": {
+    "title_exit": "Выход",
+    "text_exit": "Выйти из аккаунта?",
+    "ok": "Да",
+    "cancel": "Отмена"
+  }
+}

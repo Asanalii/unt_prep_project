@@ -1,0 +1,38 @@
+:root {
+  /* brand */
+  --color-primary: #6b7bff;
+  --color-primary-600: #5a6af0;
+  --color-primary-700: #4958de;
+
+  /* ui */
+  --bg: #0f1220;
+  --bg-elev: #151a2c;
+  --card: #13172a;
+  --border: #232845;
+  --text: #dbe0ff;
+  --muted: #9aa3c7;
+  --success: #19c37d;
+  --warning: #f5a623;
+  --danger: #ff5c5c;
+
+  /* layout */
+  --radius: 14px;
+  --radius-sm: 10px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+
+  /* spacing scale */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+
+  /* typography */
+  --fz-12: 12px;
+  --fz-14: 14px;
+  --fz-16: 16px;
+  --fz-20: 20px;
+  --fz-24: 24px;
+}

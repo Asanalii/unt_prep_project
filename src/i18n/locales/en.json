@@ -1,0 +1,36 @@
+{
+  "app": { "name": "UNT Prep", "beta": "Beta" },
+  "auth": {
+    "login": "Login",
+    "register": "Sign up",
+    "welcome_back": "Good to see you again.",
+    "create_account": "Create an account to prepare for UNT.",
+    "email": "Email",
+    "password": "Password",
+    "password_repeat": "Repeat password",
+    "enter": "Login",
+    "entering": "Logging in…",
+    "signup": "Sign up",
+    "signing": "Creating…",
+    "no_account": "No account?",
+    "has_account": "Already have an account?",
+    "go_login": "Login",
+    "go_register": "Register"
+  },
+  "common": {
+    "subjects": "Subjects",
+    "tests": "Tests",
+    "forum": "Forum",
+    "dashboard": "Dashboard",
+    "available": "Available",
+    "soon": "Soon",
+    "duration_m": "Duration: {min} min."
+  },
+  "toast": { "welcome": "Welcome!", "logout": "You have logged out" },
+  "confirm": {
+    "title_exit": "Logout",
+    "text_exit": "Log out of account?",
+    "ok": "OK",
+    "cancel": "Cancel"
+  }
+}
