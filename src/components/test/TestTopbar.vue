@@ -59,13 +59,7 @@ const emit = defineEmits(["toggle-menu", "prev-subject", "next-subject"]);
   color: var(--text);
   font-weight: 600;
 }
-.icon {
-  width: 34px;
-  height: 34px;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 10px;
-}
+
 .ghost {
   padding: 8px 12px;
   border-radius: var(--radius-sm);
@@ -79,5 +73,9 @@ const emit = defineEmits(["toggle-menu", "prev-subject", "next-subject"]);
   border: 1px solid var(--accent-color);
   background: color-mix(in oklab, var(--accent-color) 14%, var(--card));
   color: var(--text);
+}
+
+button {
+  cursor: pointer;
 }
 </style>
