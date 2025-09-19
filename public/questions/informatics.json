@@ -1,0 +1,656 @@
+[
+  {
+    "id": "cs-01",
+    "type": "single",
+    "stem": "Алгоритм — это:",
+    "choices": [
+      { "id": "A", "text": "Последовательность шагов для решения задачи" },
+      { "id": "B", "text": "Файл .exe" },
+      { "id": "C", "text": "Язык программирования" },
+      { "id": "D", "text": "Сетевая топология" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Классическое определение.",
+    "skill": "Алгоритмы",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-02",
+    "type": "single",
+    "stem": "Массив — это:",
+    "choices": [
+      { "id": "A", "text": "Структура данных с индексированным доступом" },
+      { "id": "B", "text": "Тип цикла" },
+      { "id": "C", "text": "IDE" },
+      { "id": "D", "text": "Сервер" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Упорядоченная коллекция элементов одного типа.",
+    "skill": "Структуры данных",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-03",
+    "type": "single",
+    "stem": "Сложность алгоритма O(n log n) характерна для:",
+    "choices": [
+      { "id": "A", "text": "Сортировки слиянием" },
+      { "id": "B", "text": "Пузырьковой сортировки" },
+      { "id": "C", "text": "Линейного поиска" },
+      { "id": "D", "text": "Поиска в хэш-таблице (в среднем)" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Merge sort — O(n log n).",
+    "skill": "Асимптотика",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-04",
+    "type": "single",
+    "stem": "Какой протокол работает на транспортном уровне модели OSI?",
+    "choices": [
+      { "id": "A", "text": "TCP" },
+      { "id": "B", "text": "IP" },
+      { "id": "C", "text": "ARP" },
+      { "id": "D", "text": "ICMP" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Транспорт: TCP/UDP.",
+    "skill": "Сети/OSI",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-05",
+    "type": "single",
+    "stem": "Какой тип СУБД относится к NoSQL?",
+    "choices": [
+      { "id": "A", "text": "Документно-ориентированная" },
+      { "id": "B", "text": "Реляционная" },
+      { "id": "C", "text": "Иерархическая (классическая)" },
+      { "id": "D", "text": "Сетевая (классическая)" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Напр., MongoDB.",
+    "skill": "Базы данных",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-06",
+    "type": "single",
+    "stem": "Какой HTTP-метод по стандарту идемпотентен?",
+    "choices": [
+      { "id": "A", "text": "GET" },
+      { "id": "B", "text": "POST" },
+      { "id": "C", "text": "PATCH" },
+      { "id": "D", "text": "CONNECT" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "GET, PUT, DELETE, HEAD — идемпотентны.",
+    "skill": "Web/HTTP",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-07",
+    "type": "single",
+    "stem": "JSON — это:",
+    "choices": [
+      { "id": "A", "text": "Текстовый формат обмена данными" },
+      { "id": "B", "text": "Бинарный протокол" },
+      { "id": "C", "text": "Язык запросов" },
+      { "id": "D", "text": "Сетевой стек" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "JavaScript Object Notation.",
+    "skill": "Форматы данных",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-08",
+    "type": "single",
+    "stem": "SQL оператор для выборки данных:",
+    "choices": [
+      { "id": "A", "text": "SELECT" },
+      { "id": "B", "text": "INSERT" },
+      { "id": "C", "text": "UPDATE" },
+      { "id": "D", "text": "DELETE" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "SELECT — чтение.",
+    "skill": "SQL",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-09",
+    "type": "single",
+    "stem": "Нормальная форма Бойса—Кодда (BCNF) относится к:",
+    "choices": [
+      { "id": "A", "text": "Нормализации БД" },
+      { "id": "B", "text": "Денормализации БД" },
+      { "id": "C", "text": "Шифрованию БД" },
+      { "id": "D", "text": "Индексированию" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Строгая форма нормализации.",
+    "skill": "Проектирование БД",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-10",
+    "type": "single",
+    "stem": "Какой адрес — частный IPv4?",
+    "choices": [
+      { "id": "A", "text": "192.168.1.10" },
+      { "id": "B", "text": "8.8.8.8" },
+      { "id": "C", "text": "1.1.1.1" },
+      { "id": "D", "text": "52.12.34.56" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Диапазоны RFC1918.",
+    "skill": "Сети/IP",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-11",
+    "type": "single",
+    "stem": "Какой тип тестирования проверяет систему целиком, как «чёрный ящик»?",
+    "choices": [
+      { "id": "A", "text": "Системное тестирование" },
+      { "id": "B", "text": "Модульное" },
+      { "id": "C", "text": "Интеграционное" },
+      { "id": "D", "text": "Регрессионное" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Системное — end-to-end поведение.",
+    "skill": "Тестирование",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-12",
+    "type": "single",
+    "stem": "Git: команда для фиксации изменений в локальном репозитории:",
+    "choices": [
+      { "id": "A", "text": "git commit" },
+      { "id": "B", "text": "git add remote" },
+      { "id": "C", "text": "git init commit" },
+      { "id": "D", "text": "git fetch commit" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "git commit — записывает снимок.",
+    "skill": "VCS/Git",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-13",
+    "type": "single",
+    "stem": "ОС: какой планировщик распределяет процессор квантами времени?",
+    "choices": [
+      { "id": "A", "text": "Round Robin" },
+      { "id": "B", "text": "FIFO без вытеснения" },
+      { "id": "C", "text": "SJF (Shortest Job First) без вытеснения" },
+      { "id": "D", "text": "LIFO" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Round Robin — кванты времени.",
+    "skill": "ОС/планирование",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-14",
+    "type": "single",
+    "stem": "Булева алгебра: закон де Моргана для ¬(A∧B) равен:",
+    "choices": [
+      { "id": "A", "text": "¬A ∨ ¬B" },
+      { "id": "B", "text": "A ∨ B" },
+      { "id": "C", "text": "¬A ∧ ¬B" },
+      { "id": "D", "text": "A ∧ B" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Не(И) = НеA ИЛИ НеB.",
+    "skill": "Логика",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-15",
+    "type": "single",
+    "stem": "Переведите двоичное 1011₂ в десятичную систему:",
+    "choices": [
+      { "id": "A", "text": "11" },
+      { "id": "B", "text": "9" },
+      { "id": "C", "text": "13" },
+      { "id": "D", "text": "7" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "8+2+1 = 11.",
+    "skill": "Системы счисления",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-16",
+    "type": "single",
+    "stem": "HTTP 404 означает:",
+    "choices": [
+      { "id": "A", "text": "Ресурс не найден" },
+      { "id": "B", "text": "Успешно" },
+      { "id": "C", "text": "Перенаправление" },
+      { "id": "D", "text": "Внутренняя ошибка сервера" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "4xx — ошибка клиента.",
+    "skill": "Web/HTTP",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-17",
+    "type": "single",
+    "stem": "Что такое REST?",
+    "choices": [
+      { "id": "A", "text": "Стиль архитектуры веб-сервисов" },
+      { "id": "B", "text": "База данных" },
+      { "id": "C", "text": "ОС" },
+      { "id": "D", "text": "Язык разметки" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Representational State Transfer.",
+    "skill": "Архитектуры веб-сервисов",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-18",
+    "type": "single",
+    "stem": "Какой тип индекса ускоряет поиск по префиксу строки?",
+    "choices": [
+      { "id": "A", "text": "B-tree" },
+      { "id": "B", "text": "Hash" },
+      { "id": "C", "text": "Bitmap" },
+      { "id": "D", "text": "Геопространственный R-tree" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "B-tree эффективен для диапазонов/префиксов.",
+    "skill": "Индексы БД",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-19",
+    "type": "single",
+    "stem": "Какой элемент HTML определяет гиперссылку?",
+    "choices": [
+      { "id": "A", "text": "<a>" },
+      { "id": "B", "text": "<link>" },
+      { "id": "C", "text": "<href>" },
+      { "id": "D", "text": "<script>" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Anchor — <a>.",
+    "skill": "HTML",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-20",
+    "type": "single",
+    "stem": "CSS свойство для задания Flex-контейнера:",
+    "choices": [
+      { "id": "A", "text": "display: flex" },
+      { "id": "B", "text": "position: flex" },
+      { "id": "C", "text": "flex: container" },
+      { "id": "D", "text": "layout: flex" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "display:flex включает Flexbox.",
+    "skill": "CSS",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-21",
+    "type": "single",
+    "stem": "JavaScript: чем является `const x = () => {}`?",
+    "choices": [
+      { "id": "A", "text": "Функциональным выражением (стрелочной функцией)" },
+      { "id": "B", "text": "Объявлением функции через function" },
+      { "id": "C", "text": "Классом" },
+      { "id": "D", "text": "Генератором" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Стрелочная функция.",
+    "skill": "JS/функции",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-22",
+    "type": "single",
+    "stem": "ООП: инкапсуляция — это:",
+    "choices": [
+      { "id": "A", "text": "Сокрытие внутреннего состояния объекта" },
+      { "id": "B", "text": "Способность иметь несколько форм" },
+      { "id": "C", "text": "Наследование от базового класса" },
+      { "id": "D", "text": "Связывание во время выполнения" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Сокрытие данных и интерфейсы доступа.",
+    "skill": "ООП",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-23",
+    "type": "single",
+    "stem": "Какая операция SQL объединяет строки двух таблиц по условию?",
+    "choices": [
+      { "id": "A", "text": "JOIN" },
+      { "id": "B", "text": "GROUP BY" },
+      { "id": "C", "text": "WHERE" },
+      { "id": "D", "text": "HAVING" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "JOIN — объединение по ключам.",
+    "skill": "SQL/JOIN",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-24",
+    "type": "single",
+    "stem": "Шифрование, при котором используется один ключ на шифрование/дешифрование:",
+    "choices": [
+      { "id": "A", "text": "Симметричное" },
+      { "id": "B", "text": "Асимметричное" },
+      { "id": "C", "text": "Гомоморфное" },
+      { "id": "D", "text": "Хеширование" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "AES и т. п.",
+    "skill": "Криптография",
+    "context": null,
+    "match": null
+  },
+
+  {
+    "id": "cs-25",
+    "type": "single",
+    "stem": "Какой ответ сервера сообщает об успешном создании ресурса?",
+    "choices": [
+      { "id": "A", "text": "201 Created" },
+      { "id": "B", "text": "200 OK" },
+      { "id": "C", "text": "204 No Content" },
+      { "id": "D", "text": "202 Accepted" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "201 — ресурс создан.",
+    "skill": "HTTP/статусы",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "cs-26",
+    "type": "context",
+    "context": "Фрагмент лога сервера: 'GET /api/users 200 12ms'.",
+    "stem": "Какой метод использован и что означает 200?",
+    "choices": [
+      { "id": "A", "text": "GET; успешно" },
+      { "id": "B", "text": "POST; успешно" },
+      { "id": "C", "text": "GET; не найдено" },
+      { "id": "D", "text": "POST; ошибка клиента" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "GET, 200 — OK.",
+    "skill": "HTTP/логи",
+    "match": null
+  },
+  {
+    "id": "cs-27",
+    "type": "context",
+    "context": "SQL: Таблица Users(id, name). Запрос: SELECT COUNT(*) FROM Users WHERE name LIKE 'A%';",
+    "stem": "Что посчитает запрос?",
+    "choices": [
+      { "id": "A", "text": "Количество имён, начинающихся на A" },
+      { "id": "B", "text": "Сумму id" },
+      { "id": "C", "text": "Всех пользователей" },
+      { "id": "D", "text": "Максимальный id" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "LIKE 'A%' — префикс A.",
+    "skill": "SQL/LIKE",
+    "match": null
+  },
+  {
+    "id": "cs-28",
+    "type": "context",
+    "context": "Код JS: const arr=[1,2,3]; const b=arr.map(x=>x*2);",
+    "stem": "Чему равен b?",
+    "choices": [
+      { "id": "A", "text": "[2,4,6]" },
+      { "id": "B", "text": "[1,2,3]" },
+      { "id": "C", "text": "[1,4,9]" },
+      { "id": "D", "text": "Ошибка" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "map применяет функцию ко всем элементам.",
+    "skill": "JS/массивы",
+    "match": null
+  },
+  {
+    "id": "cs-29",
+    "type": "context",
+    "context": "Вывод команды: ping 8.8.8.8 — packets transmitted: 4, received: 0.",
+    "stem": "Что это означает?",
+    "choices": [
+      { "id": "A", "text": "Потеря пакетов 100% (хост недоступен)" },
+      { "id": "B", "text": "Хост доступен" },
+      { "id": "C", "text": "Ошибки DNS" },
+      { "id": "D", "text": "Неправильный порт" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Все пакеты потеряны.",
+    "skill": "Сети/диагностика",
+    "match": null
+  },
+  {
+    "id": "cs-30",
+    "type": "context",
+    "context": "Файл package.json: { \"scripts\": { \"build\": \"vite build\", \"dev\": \"vite\" } }",
+    "stem": "Какая команда запустит dev-сервер?",
+    "choices": [
+      { "id": "A", "text": "npm run dev" },
+      { "id": "B", "text": "npm run build" },
+      { "id": "C", "text": "npm start build" },
+      { "id": "D", "text": "node vite" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Скрипт dev → npm run dev.",
+    "skill": "Frontend tooling",
+    "match": null
+  },
+  {
+    "id": "cs-36",
+    "type": "multi",
+    "stem": "Выберите идемпотентные HTTP-методы по стандарту:",
+    "choices": [
+      { "id": "a", "text": "GET" },
+      { "id": "b", "text": "POST" },
+      { "id": "c", "text": "PUT" },
+      { "id": "d", "text": "DELETE" },
+      { "id": "e", "text": "PATCH" },
+      { "id": "f", "text": "HEAD" },
+      { "id": "g", "text": "OPTIONS" },
+      { "id": "h", "text": "CONNECT" }
+    ],
+    "answer": ["a", "c", "d", "f", "g"],
+    "multiple": true,
+    "explanation": "Идемпотентны: GET, PUT, DELETE, HEAD, OPTIONS.",
+    "skill": "Web/HTTP",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "cs-37",
+    "type": "multi",
+    "stem": "Какие утверждения о NoSQL верны?",
+    "choices": [
+      { "id": "a", "text": "Часто масштабируются горизонтально" },
+      { "id": "b", "text": "Строгое соблюдение ACID всегда обязательно" },
+      { "id": "c", "text": "Возможна схема слабо заданная/гибкая" },
+      { "id": "d", "text": "Всегда заменяют реляционные БД" },
+      {
+        "id": "e",
+        "text": "Существуют документы, ключ-значение, графы, wide-column"
+      },
+      { "id": "f", "text": "Не поддерживают индексы" },
+      { "id": "g", "text": "CAP-компромиссы часто важны" },
+      { "id": "h", "text": "Подходят только для кэшей" }
+    ],
+    "answer": ["a", "c", "e", "g"],
+    "multiple": true,
+    "explanation": "NoSQL — горизонтальное масштабирование, гибкая схема, разные модели, важен CAP.",
+    "skill": "Базы данных",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "cs-38",
+    "type": "multi",
+    "stem": "Выберите безопасные практики для паролей:",
+    "choices": [
+      { "id": "a", "text": "Хранение хэша с солью" },
+      { "id": "b", "text": "Хранение в открытом виде" },
+      { "id": "c", "text": "Использование bcrypt/argon2/scrypt" },
+      { "id": "d", "text": "Фиксированная длина 6 символов" },
+      { "id": "e", "text": "2FA/MFA" },
+      { "id": "f", "text": "Повторное использование одного пароля" },
+      { "id": "g", "text": "Проверка утечек (HIBP и т. п.)" },
+      { "id": "h", "text": "Отправка пароля на email в чистом виде" }
+    ],
+    "answer": ["a", "c", "e", "g"],
+    "multiple": true,
+    "explanation": "Соль+хэш, современные KDF, MFA, проверка утечек — ок.",
+    "skill": "Безопасность",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "cs-39",
+    "type": "multi",
+    "stem": "Какие команды Linux относятся к диагностике сети?",
+    "choices": [
+      { "id": "a", "text": "ping" },
+      { "id": "b", "text": "traceroute" },
+      { "id": "c", "text": "grep" },
+      { "id": "d", "text": "curl" },
+      { "id": "e", "text": "netstat/ss" },
+      { "id": "f", "text": "ls" },
+      { "id": "g", "text": "dig/nslookup" },
+      { "id": "h", "text": "tar" }
+    ],
+    "answer": ["a", "b", "d", "e", "g"],
+    "multiple": true,
+    "explanation": "ping, traceroute, curl, netstat/ss, dig/nslookup — сетевые утилиты.",
+    "skill": "Сети/CLI",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "cs-40",
+    "type": "multi",
+    "stem": "Выберите верные утверждения про ООП:",
+    "choices": [
+      {
+        "id": "a",
+        "text": "Инкапсуляция — сокрытие реализации за интерфейсом"
+      },
+      {
+        "id": "b",
+        "text": "Наследование — повторное использование кода базового класса"
+      },
+      {
+        "id": "c",
+        "text": "Полиморфизм — единый интерфейс, разные реализации"
+      },
+      {
+        "id": "d",
+        "text": "Абстракция — выделение существенного и скрытие несущественного"
+      },
+      { "id": "e", "text": "Полиморфизм невозможен без наследования" },
+      { "id": "f", "text": "Интерфейс — всегда содержит реализацию" },
+      { "id": "g", "text": "Композиция — связь «часть-целое»" },
+      { "id": "h", "text": "Наследование — всегда лучше композиции" }
+    ],
+    "answer": ["a", "b", "c", "d", "g"],
+    "multiple": true,
+    "explanation": "a,b,c,d,g — корректны; e,f,h — некорректны/слишком категоричны.",
+    "skill": "ООП",
+    "context": null,
+    "match": null
+  }
+]

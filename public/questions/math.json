@@ -1,0 +1,685 @@
+[
+  {
+    "id": "m-01",
+    "type": "single",
+    "stem": "Найдите производную f(x)=x^2.",
+    "choices": [
+      { "id": "A", "text": "2x" },
+      { "id": "B", "text": "x" },
+      { "id": "C", "text": "x^3" },
+      { "id": "D", "text": "2" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "d(x^2)/dx=2x.",
+    "skill": "Производные"
+  },
+  {
+    "id": "m-02",
+    "type": "single",
+    "stem": "log₁₀(100) =",
+    "choices": [
+      { "id": "A", "text": "2" },
+      { "id": "B", "text": "10" },
+      { "id": "C", "text": "1" },
+      { "id": "D", "text": "0" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "10^2=100.",
+    "skill": "Логарифмы"
+  },
+  {
+    "id": "m-03",
+    "type": "single",
+    "stem": "Решите уравнение: x^2-9=0.",
+    "choices": [
+      { "id": "A", "text": "±3" },
+      { "id": "B", "text": "3" },
+      { "id": "C", "text": "-3" },
+      { "id": "D", "text": "0" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "(x-3)(x+3)=0.",
+    "skill": "Квадратные уравнения"
+  },
+  {
+    "id": "m-04",
+    "type": "single",
+    "stem": "Сумма углов треугольника равна:",
+    "choices": [
+      { "id": "A", "text": "180°" },
+      { "id": "B", "text": "90°" },
+      { "id": "C", "text": "270°" },
+      { "id": "D", "text": "360°" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Теорема о сумме углов треугольника.",
+    "skill": "Геометрия"
+  },
+  {
+    "id": "m-05",
+    "type": "single",
+    "stem": "Решите: 2x-5=9.",
+    "choices": [
+      { "id": "A", "text": "x=7" },
+      { "id": "B", "text": "x=2" },
+      { "id": "C", "text": "x=−7" },
+      { "id": "D", "text": "x=14" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "2x=14→x=7.",
+    "skill": "Линейные уравнения"
+  },
+  {
+    "id": "m-06",
+    "type": "single",
+    "stem": "Найдите значение: (a^2−b^2)/(a−b), a≠b.",
+    "choices": [
+      { "id": "A", "text": "a+b" },
+      { "id": "B", "text": "a−b" },
+      { "id": "C", "text": "ab" },
+      { "id": "D", "text": "(a+b)/2" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Разность квадратов.",
+    "skill": "Тождества"
+  },
+  {
+    "id": "m-07",
+    "type": "single",
+    "stem": "Корни уравнения sin x = 0 на [0;2π]:",
+    "choices": [
+      { "id": "A", "text": "0, π, 2π" },
+      { "id": "B", "text": "π/2, 3π/2" },
+      { "id": "C", "text": "π/4, 5π/4" },
+      { "id": "D", "text": "нет корней" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "sin x=0 при x=kπ.",
+    "skill": "Тригонометрия"
+  },
+  {
+    "id": "m-08",
+    "type": "single",
+    "stem": "Найдите модуль числа −7.",
+    "choices": [
+      { "id": "A", "text": "7" },
+      { "id": "B", "text": "-7" },
+      { "id": "C", "text": "0" },
+      { "id": "D", "text": "1" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "|−7|=7.",
+    "skill": "Числа"
+  },
+  {
+    "id": "m-09",
+    "type": "single",
+    "stem": "Производная sin x равна:",
+    "choices": [
+      { "id": "A", "text": "cos x" },
+      { "id": "B", "text": "−cos x" },
+      { "id": "C", "text": "sin x" },
+      { "id": "D", "text": "−sin x" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "(sin x)'=cos x.",
+    "skill": "Производные"
+  },
+  {
+    "id": "m-10",
+    "type": "single",
+    "stem": "Площадь круга радиуса r:",
+    "choices": [
+      { "id": "A", "text": "πr^2" },
+      { "id": "B", "text": "2πr" },
+      { "id": "C", "text": "πr" },
+      { "id": "D", "text": "4πr^2" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Формула площади круга.",
+    "skill": "Геометрия"
+  },
+  {
+    "id": "m-11",
+    "type": "single",
+    "stem": "Найдите значение выражения: log₂8.",
+    "choices": [
+      { "id": "A", "text": "3" },
+      { "id": "B", "text": "2" },
+      { "id": "C", "text": "4" },
+      { "id": "D", "text": "1" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "2^3=8.",
+    "skill": "Логарифмы"
+  },
+  {
+    "id": "m-12",
+    "type": "single",
+    "stem": "Решите систему: {x+y=5; x−y=1}.",
+    "choices": [
+      { "id": "A", "text": "(3,2)" },
+      { "id": "B", "text": "(2,3)" },
+      { "id": "C", "text": "(1,4)" },
+      { "id": "D", "text": "(4,1)" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Сложение уравнений даёт 2x=6.",
+    "skill": "Системы уравнений"
+  },
+  {
+    "id": "m-13",
+    "type": "single",
+    "stem": "Найдите значение выражения: (3/4)+(1/8).",
+    "choices": [
+      { "id": "A", "text": "7/8" },
+      { "id": "B", "text": "5/8" },
+      { "id": "C", "text": "1" },
+      { "id": "D", "text": "3/8" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "6/8+1/8=7/8.",
+    "skill": "Дроби"
+  },
+  {
+    "id": "m-14",
+    "type": "single",
+    "stem": "Вектор (2,−1) имеет длину:",
+    "choices": [
+      { "id": "A", "text": "√5" },
+      { "id": "B", "text": "√3" },
+      { "id": "C", "text": "3" },
+      { "id": "D", "text": "5" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "√(2^2+1^2)=√5.",
+    "skill": "Геометрия/векторы"
+  },
+  {
+    "id": "m-15",
+    "type": "single",
+    "stem": "Корни квадратного уравнения ax^2+bx+c=0 находятся по формуле:",
+    "choices": [
+      { "id": "A", "text": "x=\\frac{-b±√(b^2−4ac)}{2a}" },
+      { "id": "B", "text": "x=−b/a" },
+      { "id": "C", "text": "x=−c/b" },
+      { "id": "D", "text": "x=\\frac{c}{a}" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Формула корней через дискриминант.",
+    "skill": "Квадр. уравнения"
+  },
+  {
+    "id": "m-16",
+    "type": "single",
+    "stem": "Найдите tg x, если sin x=3/5 и x в I четверти.",
+    "choices": [
+      { "id": "A", "text": "3/4" },
+      { "id": "B", "text": "4/3" },
+      { "id": "C", "text": "5/3" },
+      { "id": "D", "text": "3/5" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "cos x=4/5 → tg=3/4.",
+    "skill": "Тригонометрия"
+  },
+  {
+    "id": "m-17",
+    "type": "single",
+    "stem": "Предел lim_{x→0} (sin x)/x равен:",
+    "choices": [
+      { "id": "A", "text": "1" },
+      { "id": "B", "text": "0" },
+      { "id": "C", "text": "∞" },
+      { "id": "D", "text": "не существует" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Классический предел.",
+    "skill": "Пределы"
+  },
+  {
+    "id": "m-18",
+    "type": "single",
+    "stem": "Объём прямоугольного параллелепипеда со сторонами a,b,c:",
+    "choices": [
+      { "id": "A", "text": "abc" },
+      { "id": "B", "text": "ab+bc+ac" },
+      { "id": "C", "text": "a^2+b^2+c^2" },
+      { "id": "D", "text": "2(ab+bc+ac)" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Произведение измерений.",
+    "skill": "Геометрия"
+  },
+  {
+    "id": "m-19",
+    "type": "single",
+    "stem": "Если f(x)=3x−1, то f(2)=",
+    "choices": [
+      { "id": "A", "text": "5" },
+      { "id": "B", "text": "1" },
+      { "id": "C", "text": "−5" },
+      { "id": "D", "text": "7" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "3·2−1=5.",
+    "skill": "Функции"
+  },
+  {
+    "id": "m-20",
+    "type": "single",
+    "stem": "Радиус окружности, описанной около равностороннего треугольника со стороной a:",
+    "choices": [
+      { "id": "A", "text": "a/√3" },
+      { "id": "B", "text": "a/2" },
+      { "id": "C", "text": "√3·a/2" },
+      { "id": "D", "text": "a" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "R=a/√3.",
+    "skill": "Геометрия"
+  },
+  {
+    "id": "m-21",
+    "type": "single",
+    "stem": "Определите знак производной при возрастании функции.",
+    "choices": [
+      { "id": "A", "text": "Положительный" },
+      { "id": "B", "text": "Отрицательный" },
+      { "id": "C", "text": "Нулевой" },
+      { "id": "D", "text": "Неопределён" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "f'>0 на интервалах возрастания.",
+    "skill": "Анализ"
+  },
+  {
+    "id": "m-22",
+    "type": "single",
+    "stem": "Найдите значение: C(5,2).",
+    "choices": [
+      { "id": "A", "text": "10" },
+      { "id": "B", "text": "5" },
+      { "id": "C", "text": "20" },
+      { "id": "D", "text": "15" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "5·4/2=10.",
+    "skill": "Комбинаторика"
+  },
+  {
+    "id": "m-23",
+    "type": "single",
+    "stem": "Сумма первых n членов арифметической прогрессии:",
+    "choices": [
+      { "id": "A", "text": "S_n = n(a_1+a_n)/2" },
+      { "id": "B", "text": "S_n = a_1·q^{n-1}" },
+      { "id": "C", "text": "S_n = a_1+(n-1)d" },
+      { "id": "D", "text": "S_n = a_1/(1-q)" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Формула суммы АП.",
+    "skill": "Прогрессии"
+  },
+  {
+    "id": "m-24",
+    "type": "single",
+    "stem": "Производная e^x равна:",
+    "choices": [
+      { "id": "A", "text": "e^x" },
+      { "id": "B", "text": "x·e^x" },
+      { "id": "C", "text": "1" },
+      { "id": "D", "text": "ln x" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "(e^x)'=e^x.",
+    "skill": "Производные"
+  },
+  {
+    "id": "m-25",
+    "type": "single",
+    "stem": "Если det A ≠ 0, то система Ax=b имеет:",
+    "choices": [
+      { "id": "A", "text": "Единственное решение" },
+      { "id": "B", "text": "Бесконечно много решений" },
+      { "id": "C", "text": "Нет решений" },
+      { "id": "D", "text": "Только нулевое решение" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "Обратимая матрица даёт единственное решение.",
+    "skill": "Линал"
+  },
+  {
+    "id": "m-26",
+    "type": "context",
+    "context": "Таблица: месячные продажи (шт.) по кварталу: Q1=120, Q2=150, Q3=130, Q4=100.",
+    "stem": "Среднее значение продаж за год равно:",
+    "choices": [
+      { "id": "A", "text": "125" },
+      { "id": "B", "text": "125,0" },
+      { "id": "C", "text": "125 шт." },
+      { "id": "D", "text": "125%" }
+    ],
+    "answer": ["C"],
+    "multiple": false,
+    "explanation": "(120+150+130+100)/4=125 шт.",
+    "skill": "Статистика",
+    "match": null
+  },
+  {
+    "id": "m-27",
+    "type": "context",
+    "context": "График линейной функции проходит через точки (0;2) и (2;6).",
+    "stem": "Найдите коэффициент k в y=kx+b.",
+    "choices": [
+      { "id": "A", "text": "2" },
+      { "id": "B", "text": "3" },
+      { "id": "C", "text": "4" },
+      { "id": "D", "text": "0,5" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "k=(6−2)/(2−0)=2.",
+    "skill": "Анализ данных",
+    "match": null
+  },
+  {
+    "id": "m-28",
+    "type": "context",
+    "context": "Таблица значений: x:1,2,3,4; f(x):2,4,8,16.",
+    "stem": "Какая функция описывает зависимость лучше всего?",
+    "choices": [
+      { "id": "A", "text": "f(x)=2x" },
+      { "id": "B", "text": "f(x)=2^x" },
+      { "id": "C", "text": "f(x)=x^2" },
+      { "id": "D", "text": "f(x)=x+1" }
+    ],
+    "answer": ["B"],
+    "multiple": false,
+    "explanation": "Значения удваиваются — показательна.",
+    "skill": "Моделирование",
+    "match": null
+  },
+  {
+    "id": "m-29",
+    "type": "context",
+    "context": "Таблица: Радиус (см) — 1,2,3; Площадь (см²) — 3,14; 12,56; 28,26.",
+    "stem": "Какой тип зависимости между S и r?",
+    "choices": [
+      { "id": "A", "text": "Линейная" },
+      { "id": "B", "text": "Квадратичная" },
+      { "id": "C", "text": "Степенная со степенью 1/2" },
+      { "id": "D", "text": "Логарифмическая" }
+    ],
+    "answer": ["B"],
+    "multiple": false,
+    "explanation": "S=πr^2 — квадратичная.",
+    "skill": "Анализ",
+    "match": null
+  },
+  {
+    "id": "m-30",
+    "type": "context",
+    "context": "Диаграмма показывает рост населения города: 1,05; 1,10; 1,155 (млн) за 3 года.",
+    "stem": "Среднегеометрический темп роста примерно равен:",
+    "choices": [
+      { "id": "A", "text": "~4,9% в год" },
+      { "id": "B", "text": "~5,0% в год" },
+      { "id": "C", "text": "~5,1% в год" },
+      { "id": "D", "text": "~15% в год" }
+    ],
+    "answer": ["B"],
+    "multiple": false,
+    "explanation": "(1,155/1,05)^(1/2)−1 ≈ 0,05.",
+    "skill": "Статистика",
+    "match": null
+  },
+  {
+    "id": "m-31",
+    "type": "match",
+    "stem": "Установите соответствие: понятие — определение.",
+    "choices": [],
+    "answer": [],
+    "multiple": false,
+    "explanation": "—",
+    "skill": "Определения",
+    "context": null,
+    "match": {
+      "left": [
+        "Производная",
+        "Интеграл",
+        "Дискриминант",
+        "Матрица",
+        "Детерминант"
+      ],
+      "right": [
+        "A. Число под корнем формулы корней",
+        "B. Предел приращения функции",
+        "C. Числовая функция, обратная дифференцированию",
+        "D. Прямоугольная таблица чисел",
+        "E. Число, характеризующее матрицу"
+      ],
+      "pairs": [
+        ["1", "B"],
+        ["2", "C"],
+        ["3", "A"],
+        ["4", "D"],
+        ["5", "E"]
+      ]
+    }
+  },
+  {
+    "id": "m-32",
+    "type": "match",
+    "stem": "Соотнесите функцию и её производную.",
+    "choices": [],
+    "answer": [],
+    "multiple": false,
+    "explanation": "—",
+    "skill": "Производные",
+    "context": null,
+    "match": {
+      "left": ["sin x", "cos x", "e^x", "x^3", "ln x"],
+      "right": ["A. 3x^2", "B. 1/x", "C. e^x", "D. −sin x", "E. cos x"],
+      "pairs": [
+        ["1", "E"],
+        ["2", "D"],
+        ["3", "C"],
+        ["4", "A"],
+        ["5", "B"]
+      ]
+    }
+  },
+  {
+    "id": "m-33",
+    "type": "match",
+    "stem": "Соотнесите величину и формулу.",
+    "choices": [],
+    "answer": [],
+    "multiple": false,
+    "explanation": "—",
+    "skill": "Геометрия",
+    "context": null,
+    "match": {
+      "left": [
+        "Площадь круга",
+        "Длина окружности",
+        "Объём шара",
+        "Площадь боковой поверхности цилиндра",
+        "Объём цилиндра"
+      ],
+      "right": ["A. 2πr·h", "B. πr^2", "C. 4/3·πr^3", "D. 2πr", "E. πr^2h"],
+      "pairs": [
+        ["1", "B"],
+        ["2", "D"],
+        ["3", "C"],
+        ["4", "A"],
+        ["5", "E"]
+      ]
+    }
+  },
+  {
+    "id": "m-34",
+    "type": "match",
+    "stem": "Соотнесите ряд и тип прогрессии.",
+    "choices": [],
+    "answer": [],
+    "multiple": false,
+    "explanation": "—",
+    "skill": "Прогрессии",
+    "context": null,
+    "match": {
+      "left": [
+        "2,4,6,8,…",
+        "3,6,12,24,…",
+        "5,5,5,5,…",
+        "1,1/2,1/4,1/8,…",
+        "7,4,1,−2,…"
+      ],
+      "right": [
+        "A. Геометрическая, q<1",
+        "B. Арифметическая, d=2",
+        "C. Постоянная",
+        "D. Арифметическая, d=−3",
+        "E. Геометрическая, q=2"
+      ],
+      "pairs": [
+        ["1", "B"],
+        ["2", "E"],
+        ["3", "C"],
+        ["4", "A"],
+        ["5", "D"]
+      ]
+    }
+  },
+  {
+    "id": "m-35",
+    "type": "match",
+    "stem": "Соотнесите уравнение и его корни.",
+    "choices": [],
+    "answer": [],
+    "multiple": false,
+    "explanation": "—",
+    "skill": "Алгебра",
+    "context": null,
+    "match": {
+      "left": ["x^2−1=0", "x^2−4x+4=0", "x^2+1=0", "x^2−9=0", "x^2−5x=0"],
+      "right": [
+        "A. x=±3",
+        "B. x=1",
+        "C. x=0 или x=5",
+        "D. x=±1",
+        "E. Корней нет в R"
+      ],
+      "pairs": [
+        ["1", "D"],
+        ["2", "B"],
+        ["3", "E"],
+        ["4", "A"],
+        ["5", "C"]
+      ]
+    }
+  },
+  {
+    "id": "m-36",
+    "type": "multi",
+    "stem": "Выберите тождества, верные для любых a,b.",
+    "choices": [
+      { "id": "A", "text": "(a+b)^2=a^2+2ab+b^2" },
+      { "id": "B", "text": "(a−b)^2=a^2−2ab+b^2" },
+      { "id": "C", "text": "a^2−b^2=(a−b)(a+b)" },
+      { "id": "D", "text": "(a+b)^2=a^2+b^2" }
+    ],
+    "answer": ["A", "B", "C"],
+    "multiple": true,
+    "explanation": "D неверно — отсутствует член 2ab.",
+    "skill": "Тождества",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "m-37",
+    "type": "multi",
+    "stem": "Какие из следующих равенств верны для производных?",
+    "choices": [
+      { "id": "A", "text": "(kx)'=k" },
+      { "id": "B", "text": "(x^n)'=nx^{n-1}" },
+      { "id": "C", "text": "(sin x)'=cos x" },
+      { "id": "D", "text": "(ln x)'=1/x" }
+    ],
+    "answer": ["B", "C", "D"],
+    "multiple": true,
+    "explanation": "(kx)'=k верно, но подразумевается константа k → производная k; выражение A неоднозначно. Выбираем B,C,D.",
+    "skill": "Производные"
+  },
+  {
+    "id": "m-38",
+    "type": "multi",
+    "stem": "Какие утверждения о матрицах верны?",
+    "choices": [
+      { "id": "A", "text": "det(AB)=det A·det B" },
+      { "id": "B", "text": "(A^T)^T=A" },
+      { "id": "C", "text": "A·B=B·A для любых A,B" },
+      { "id": "D", "text": "Если det A ≠ 0, A обратима" }
+    ],
+    "answer": ["A", "B", "D"],
+    "multiple": true,
+    "explanation": "Матрицы вообще не коммутируют (C — неверно).",
+    "skill": "Линал"
+  },
+  {
+    "id": "m-39",
+    "type": "multi",
+    "stem": "Для геометрической прогрессии справедливы:",
+    "choices": [
+      { "id": "A", "text": "a_{n}=a_1 q^{n-1}" },
+      { "id": "B", "text": "S_n=a_1(1−q^n)/(1−q), q≠1" },
+      { "id": "C", "text": "d=a_{n+1}−a_n — постоянная" },
+      { "id": "D", "text": "q=a_{n+1}/a_n — постоянное" }
+    ],
+    "answer": ["A", "B", "D"],
+    "multiple": true,
+    "explanation": "C — свойство арифметической прогрессии.",
+    "skill": "Прогрессии"
+  },
+  {
+    "id": "m-40",
+    "type": "multi",
+    "stem": "Выберите верные равенства для логарифмов (a>0, a≠1, x>0, y>0):",
+    "choices": [
+      { "id": "A", "text": "log_a(xy)=log_a x+log_a y" },
+      { "id": "B", "text": "log_a(x^k)=k·log_a x" },
+      { "id": "C", "text": "log_a(x+y)=log_a x+log_a y" },
+      { "id": "D", "text": "log_a(1/x)=−log_a x" }
+    ],
+    "answer": ["A", "B", "D"],
+    "multiple": true,
+    "explanation": "C неверно — логарифм суммы не раскладывается так.",
+    "skill": "Логарифмы"
+  }
+]

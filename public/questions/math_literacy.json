@@ -1,0 +1,172 @@
+[
+  {
+    "id": "ml-01",
+    "type": "single",
+    "stem": "Что больше: 0,3 или 0,25?",
+    "choices": [
+      { "id": "A", "text": "0,3" },
+      { "id": "B", "text": "0,25" },
+      { "id": "C", "text": "Равны" },
+      { "id": "D", "text": "Н/д" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "0,30 > 0,25.",
+    "skill": "Сравнение дробей",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "ml-02",
+    "type": "single",
+    "stem": "Товар стоит 120 тг. Скидка 25%. Итоговая цена:",
+    "choices": [
+      { "id": "A", "text": "90" },
+      { "id": "B", "text": "95" },
+      { "id": "C", "text": "100" },
+      { "id": "D", "text": "85" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "120 × (1−0,25) = 90.",
+    "skill": "Проценты",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "ml-03",
+    "type": "single",
+    "stem": "Среднее арифметическое чисел 4 и 10 равно:",
+    "choices": [
+      { "id": "A", "text": "7" },
+      { "id": "B", "text": "6" },
+      { "id": "C", "text": "8" },
+      { "id": "D", "text": "5" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "(4+10)/2 = 7.",
+    "skill": "Средние",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "ml-04",
+    "type": "single",
+    "stem": "Сколько процентов от 200 составляет 30?",
+    "choices": [
+      { "id": "A", "text": "15%" },
+      { "id": "B", "text": "20%" },
+      { "id": "C", "text": "10%" },
+      { "id": "D", "text": "25%" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "30/200 = 0,15 → 15%.",
+    "skill": "Проценты",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "ml-05",
+    "type": "single",
+    "stem": "График линейной функции — это:",
+    "choices": [
+      { "id": "A", "text": "Прямая" },
+      { "id": "B", "text": "Окружность" },
+      { "id": "C", "text": "Гипербола" },
+      { "id": "D", "text": "Парабола" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "y = kx + b — прямая линия.",
+    "skill": "Функции и графики",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "ml-06",
+    "type": "single",
+    "stem": "Если зарплата выросла с 200 000 тг до 220 000 тг, то рост составил:",
+    "choices": [
+      { "id": "A", "text": "5%" },
+      { "id": "B", "text": "10%" },
+      { "id": "C", "text": "8%" },
+      { "id": "D", "text": "20%" }
+    ],
+    "answer": ["B"],
+    "multiple": false,
+    "explanation": "(220−200)/200 = 0,10 → 10%.",
+    "skill": "Проценты/изменения",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "ml-07",
+    "type": "single",
+    "stem": "Медиана набора {2, 5, 7, 9, 11}:",
+    "choices": [
+      { "id": "A", "text": "5" },
+      { "id": "B", "text": "7" },
+      { "id": "C", "text": "9" },
+      { "id": "D", "text": "6" }
+    ],
+    "answer": ["B"],
+    "multiple": false,
+    "explanation": "Средний элемент упорядоченного набора — 7.",
+    "skill": "Статистика (медиана)",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "ml-08",
+    "type": "single",
+    "stem": "Сократите дробь 18/24.",
+    "choices": [
+      { "id": "A", "text": "3/4" },
+      { "id": "B", "text": "2/3" },
+      { "id": "C", "text": "9/12" },
+      { "id": "D", "text": "4/5" }
+    ],
+    "answer": ["A"],
+    "multiple": false,
+    "explanation": "18/24 = (6·3)/(6·4) = 3/4.",
+    "skill": "Дроби/сокращение",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "ml-09",
+    "type": "single",
+    "stem": "Курс доллара вырос с 450 до 477 тг. Прирост в процентах:",
+    "choices": [
+      { "id": "A", "text": "6%" },
+      { "id": "B", "text": "5%" },
+      { "id": "C", "text": "4%" },
+      { "id": "D", "text": "3%" }
+    ],
+    "answer": ["B"],
+    "multiple": false,
+    "explanation": "(477−450)/450 ≈ 0,06… → округлим до 6%, но точнее ~6,0%. Здесь правильный ближайший — 6%? Чтобы исключить неоднозначность, выбираем 6%.",
+    "skill": "Проценты/округление",
+    "context": null,
+    "match": null
+  },
+  {
+    "id": "ml-10",
+    "type": "single",
+    "stem": "Доля 45 минут от 2 часов — это:",
+    "choices": [
+      { "id": "A", "text": "3/4" },
+      { "id": "B", "text": "1/2" },
+      { "id": "C", "text": "3/8" },
+      { "id": "D", "text": "1/4" }
+    ],
+    "answer": ["C"],
+    "multiple": false,
+    "explanation": "45 мин из 120 мин → 45/120 = 3/8.",
+    "skill": "Доли/время",
+    "context": null,
+    "match": null
+  }
+]
