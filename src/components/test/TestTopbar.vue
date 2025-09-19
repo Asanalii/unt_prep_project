@@ -1,5 +1,9 @@
 <script setup>
+import { useI18n } from "vue-i18n";
+
 import BaseButton from "@/components/atoms/BaseButton.vue";
+
+const { t } = useI18n();
 
 const props = defineProps({
   subject: { type: Object, required: true },
@@ -7,6 +11,7 @@ const props = defineProps({
   hasPrev: { type: Boolean, default: false },
   hasNext: { type: Boolean, default: false },
 });
+
 const emit = defineEmits(["toggle-menu", "prev-subject", "next-subject"]);
 </script>
 
@@ -21,7 +26,7 @@ const emit = defineEmits(["toggle-menu", "prev-subject", "next-subject"]);
     </button>
 
     <div class="top-title">
-      {{ $t("test.subject") }}: <b>{{ subject.name }}</b>
+      {{ t("test.subject") }}: <b>{{ subject.name }}</b>
     </div>
 
     <div class="top-right">
@@ -32,7 +37,7 @@ const emit = defineEmits(["toggle-menu", "prev-subject", "next-subject"]);
         :disabled="!hasPrev"
         @click="emit('prev-subject')"
       >
-        {{ $t("test.prev_subject") }}
+        {{ t("test.prev_subject") }}
       </BaseButton>
       <BaseButton
         variant="primary"
@@ -40,7 +45,7 @@ const emit = defineEmits(["toggle-menu", "prev-subject", "next-subject"]);
         :disabled="!hasNext"
         @click="emit('next-subject')"
       >
-        {{ $t("test.next_subject") }}
+        {{ t("test.next_subject") }}
       </BaseButton>
     </div>
   </header>

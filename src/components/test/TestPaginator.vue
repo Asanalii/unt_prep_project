@@ -14,6 +14,7 @@ const emit = defineEmits(["go"]);
       :key="q.id"
       class="qbtn"
       :class="{ active: i === index, answered: !!answers.get(q.id)?.size }"
+      :aria-current="i === index ? 'page' : null"
       @click="emit('go', i)"
     >
       {{ i + 1 }}
@@ -42,8 +43,16 @@ const emit = defineEmits(["go"]);
   color: var(--text);
   cursor: pointer;
   transition: 0.15s;
+  transition: transform var(--motion-fast) var(--easing),
+    box-shadow var(--motion-fast), border-color var(--motion-fast);
 }
+
+.qbtn:hover {
+  transform: translateY(-1px);
+}
+
 .qbtn.active {
+  transform: none;
   border-color: var(--accent-color);
   box-shadow: inset 0 0 0 1px var(--accent-color);
 }

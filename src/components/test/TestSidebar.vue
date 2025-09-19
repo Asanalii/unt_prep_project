@@ -1,11 +1,23 @@
 <script setup>
+import { useI18n } from "vue-i18n";
+
 const props = defineProps({
   collapsed: { type: Boolean, default: false }, // <-- новый режим «рейл»
   username: { type: String, required: true },
   subjects: { type: Array, required: true }, // [{id, name}]
   activeSubjectId: { type: String, required: true },
 });
-const emit = defineEmits(["pick-subject", "toggle"]);
+
+const emit = defineEmits([
+  "pick-subject",
+  "toggle",
+  "open-answer-map",
+  "open-calculator",
+  "open-mendeleev",
+  "open-solubility",
+]);
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -20,12 +32,13 @@ const emit = defineEmits(["pick-subject", "toggle"]);
 
     <!-- subjects -->
     <div class="left-group">
-      <div class="left-title" v-if="!collapsed">{{ $t("test.sections") }}</div>
+      <div class="left-title" v-if="!collapsed">{{ t("test.sections") }}</div>
       <button
         v-for="s in subjects"
         :key="s.id"
         class="left-item"
         :class="{ active: s.id === activeSubjectId }"
+        :aria-current="s.id === activeSubjectId ? 'true' : null"
         :title="s.name"
         @click="emit('pick-subject', s.id)"
       >
@@ -36,22 +49,38 @@ const emit = defineEmits(["pick-subject", "toggle"]);
 
     <!-- tools (пока заглушки) -->
     <div class="left-group">
-      <div class="left-title" v-if="!collapsed">{{ $t("test.tools") }}</div>
-      <button class="left-item disabled" :title="$t('test.answer_map')">
-        <span class="ico">🗺</span
-        ><span class="lbl" v-if="!collapsed">{{ $t("test.answer_map") }}</span>
+      <div class="left-title" v-if="!collapsed">{{ t("test.tools") }}</div>
+
+      <button
+        class="left-item"
+        :title="t('test.answer_map')"
+        @click="() => emit('open-answer-map')"
+      >
+        <span class="ico">🗺</span>
+        <span class="lbl" v-if="!collapsed">{{ t("test.answer_map") }}</span>
       </button>
-      <button class="left-item disabled" :title="$t('test.calculator')">
-        <span class="ico">🧮</span
-        ><span class="lbl" v-if="!collapsed">{{ $t("test.calculator") }}</span>
+
+      <button
+        class="left-item"
+        :title="t('test.calculator')"
+        @click="() => emit('open-calculator')"
+      >
+        <span class="ico">🧮</span>
+        <span class="lbl" v-if="!collapsed">{{ $t("test.calculator") }}</span>
       </button>
-      <button class="left-item disabled" :title="$t('test.mendeleev')">
+
+      <button class="left-item" @click="() => emit('open-mendeleev')">
         <span class="ico">📊</span
-        ><span class="lbl" v-if="!collapsed">{{ $t("test.mendeleev") }}</span>
+        ><span class="lbl" v-if="!collapsed">{{ t("test.mendeleev") }}</span>
       </button>
-      <button class="left-item disabled" :title="$t('test.solubility')">
-        <span class="ico">🧪</span
-        ><span class="lbl" v-if="!collapsed">{{ $t("test.solubility") }}</span>
+
+      <button
+        class="left-item"
+        :title="t('test.solubility')"
+        @click="() => emit('open-solubility')"
+      >
+        <span class="ico">🧪</span>
+        <span class="lbl" v-if="!collapsed">{{ t("test.solubility") }}</span>
       </button>
     </div>
 
@@ -70,8 +99,10 @@ const emit = defineEmits(["pick-subject", "toggle"]);
   background: var(--bg);
   overflow: auto;
   padding: 10px;
-  transition: width 0.15s;
+  transition: padding var(--motion-fast) var(--easing),
+    background-color var(--motion-fast);
 }
+
 .left.rail {
   padding: 10px 6px;
 }
@@ -97,7 +128,25 @@ const emit = defineEmits(["pick-subject", "toggle"]);
   background: transparent;
   cursor: pointer;
   user-select: none;
+  transition: background-color var(--motion-fast),
+    border-color var(--motion-fast);
 }
+
+.left.rail .lbl {
+  opacity: 0;
+  transform: translateX(-6px);
+  pointer-events: none;
+}
+
+/* кнопка-стрелка внизу — лёгкое вращение при смене режима */
+.left-bottom .icon {
+  transition: transform var(--motion-fast) var(--easing),
+    background-color var(--motion-fast);
+}
+.left.rail .left-bottom .icon {
+  transform: rotate(180deg);
+}
+
 .left.rail .left-item {
   justify-content: center;
   padding: 10px 8px;
@@ -123,6 +172,9 @@ const emit = defineEmits(["pick-subject", "toggle"]);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  transition: opacity var(--motion-fast) var(--easing),
+    transform var(--motion-fast) var(--easing);
 }
 
 .left-bottom {

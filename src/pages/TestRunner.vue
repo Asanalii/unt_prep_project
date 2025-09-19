@@ -7,6 +7,12 @@ import TestTopbar from "@/components/test/TestTopbar.vue";
 import TestSidebar from "@/components/test/TestSidebar.vue";
 import TestPaginator from "@/components/test/TestPaginator.vue";
 import TestQuestion from "@/components/test/TestQuestion.vue";
+
+import TestAnswerMap from "@/components/test/TestAnswerMap.vue";
+import TestCalculator from "@/components/test/TestCalculator.vue";
+import MendeleevPanel from "@/components/tools/MendeleevPanel.vue";
+import SolubilityPanel from "@/components/tools/SolubilityPanel.vue";
+
 import BaseButton from "../components/atoms/BaseButton.vue";
 
 const { t } = useI18n();
@@ -345,6 +351,35 @@ const questions = computed(() =>
   allQuestions.value.filter((q) => q.subject === currentSubject.value.id)
 );
 
+// === Карта ответов ===
+
+const showMap = ref(false);
+
+// Готовим структуру под карту: по каждому предмету список {num, answers[]}, плюс счётчики
+const answerSections = computed(() =>
+  subjects.map((s) => {
+    const subjectQuestions = allQuestions.value.filter(
+      (q) => q.subject === s.id
+    );
+    const items = subjectQuestions.map((q, idx) => {
+      // в answers Map лежат id вариантов; у нас ids = 'A' | 'B' ...
+      const set = answers.value.get(q.id) || new Set();
+      return { num: idx + 1, answers: Array.from(set) };
+    });
+    const answered = items.filter((i) => i.answers.length > 0).length;
+    return { id: s.id, name: s.name, items, answered, total: items.length };
+  })
+);
+
+/// === Калькулятор
+const showCalc = ref(false);
+
+/// === Таблица Мендеелеева
+const openMendeleev = ref(false);
+
+/// === Таблица растворимости
+const openSolubility = ref(false);
+
 // индекс вопроса внутри предмета
 const qIndex = ref(0);
 watch(currentSubject, () => {
@@ -410,14 +445,21 @@ const collapsed = ref(false);
     />
 
     <div class="layout">
-      <TestSidebar
-        :collapsed="collapsed"
-        :username="username"
-        :subjects="subjects"
-        :active-subject-id="currentSubject.id"
-        @pick-subject="onPickSubject"
-        @toggle="collapsed = !collapsed"
-      />
+      <Transition name="slide-x" mode="out-in">
+        <!-- :key="collapsed ? 'rail' : 'full'" -->
+        <TestSidebar
+          :collapsed="collapsed"
+          :username="username"
+          :subjects="subjects"
+          :active-subject-id="currentSubject.id"
+          @pick-subject="onPickSubject"
+          @toggle="collapsed = !collapsed"
+          @open-answer-map="showMap = true"
+          @open-calculator="showCalc = true"
+          @open-mendeleev="openMendeleev = true"
+          @open-solubility="openSolubility = true"
+        />
+      </Transition>
 
       <main class="main">
         <TestPaginator
@@ -452,14 +494,42 @@ const collapsed = ref(false);
           </div>
         </div>
 
-        <TestQuestion
-          v-if="current"
-          :question="current"
-          :checked="(cId) => isChecked(current.id, cId)"
-          @toggle="(cId) => toggleAnswer(current.id, cId, current.multiple)"
-        />
+        <Transition name="fade" mode="out-in">
+          <TestQuestion
+            v-if="current"
+            :question="current"
+            :checked="(cId) => isChecked(current.id, cId)"
+            @toggle="(cId) => toggleAnswer(current.id, cId, current.multiple)"
+          />
+        </Transition>
       </main>
     </div>
+
+    <!-- Модалка карты ответов -->
+    <TestAnswerMap
+      v-if="showMap"
+      :open="showMap"
+      :sections="answerSections"
+      @close="showMap = false"
+    />
+
+    <TestCalculator
+      v-if="showCalc"
+      :open="showCalc"
+      @close="showCalc = false"
+    />
+
+    <MendeleevPanel
+      v-if="openMendeleev"
+      :open="openMendeleev"
+      @close="openMendeleev = false"
+    />
+
+    <SolubilityPanel
+      v-if="openSolubility"
+      :open="openSolubility"
+      @close="openSolubility = false"
+    />
   </div>
 </template>
 

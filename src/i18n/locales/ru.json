@@ -32,7 +32,8 @@
     "dashboard": "Дэшборд",
     "available": "Доступно",
     "soon": "Скоро",
-    "duration_m": "Длительность: {min} мин."
+    "duration_m": "Длительность: {min} мин.",
+    "close": "Закрыть"
   },
   "toast": {
     "welcome": "Добро пожаловать!",
@@ -147,6 +148,8 @@
     "prev": "Пред. вопрос",
     "next": "След. вопрос",
     "prev_subject": "Пред. предмет",
-    "next_subject": "След. предмет"
+    "next_subject": "След. предмет",
+    "no_answers_yet": "Ответов пока нет.",
+    "answers_count": "Ответов: {n} / {total}"
   }
 }

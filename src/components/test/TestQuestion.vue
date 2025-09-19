@@ -67,22 +67,42 @@ const emit = defineEmits(["toggle"]); // (choiceId)
   border-radius: 12px;
   border: 1px solid var(--border);
   background: var(--card);
+
+  transition: background-color var(--motion-fast),
+    border-color var(--motion-fast), box-shadow var(--motion-fast),
+    transform var(--motion-fast) var(--easing);
 }
-.choice.active {
-  border-color: var(--accent-color);
-  box-shadow: inset 0 0 0 1px var(--accent-color);
-}
+
 .choice input {
   margin: 0;
 }
+
 .opt {
   color: var(--muted);
 }
+
 .txt {
   line-height: 1.5;
 }
+
 .clickable {
   cursor: pointer;
   transition: 0.15s;
+}
+
+.choice {
+  transition: background-color var(--motion-fast),
+    border-color var(--motion-fast), box-shadow var(--motion-fast),
+    transform var(--motion-fast) var(--easing);
+}
+
+.choice:hover {
+  background: color-mix(in oklab, var(--card) 85%, transparent);
+}
+
+.choice.active {
+  border-color: var(--accent-color);
+  box-shadow: inset 0 0 0 1px var(--accent-color);
+  transform: translateY(-1px);
 }
 </style>

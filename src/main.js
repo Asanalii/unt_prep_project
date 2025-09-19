@@ -2,8 +2,9 @@ import { createApp, watch } from "vue";
 import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
-import "./styles/variables.css";
-import "./styles/base.css";
+import "@/styles/variables.css";
+import "@/styles/base.css";
+import "@/styles/animations.css";
 
 import { i18n, loadLocale } from "./i18n";
 import { useUiStore } from "./stores/ui";
