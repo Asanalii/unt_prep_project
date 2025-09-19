@@ -1,389 +1,179 @@
 # UNT Prep — Frontend
 
-Одностраничное приложение для подготовки к ЕНТ. Локализация `ru/kk/en`, URL с префиксом локали, приватные роуты под логином, ролевой доступ (**student / teacher / parent / admin**), единый способ локализовать ссылки и переходы.
+> Обновлено: добавлены **страница теста**, узкий **rail‑сайдбар**, **Панель Менделеева**, **Таблица растворимости**, мелкие фиксы лэйаута и адаптивности.
 
 ---
 
-## TL;DR (как запустить)
+## Быстрый старт
 
 ```bash
 npm i
 npm run dev
+# ➜ http://localhost:5173
 ```
 
-**Vite alias** (`vite.config.js`) — обязателен:
-
-```js
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
-import { fileURLToPath, URL } from "node:url";
-
-export default defineConfig({
-  plugins: [vue()],
-  resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
-});
-```
+Сборка: **Vite + Vue 3**. Хранилище: **Pinia**. Локализация: **vue‑i18n**.
 
 ---
 
-## Архитектура и директории
+## Скрипты
+
+- `dev` — локальная разработка
+- `build` — продакшен сборка
+- `preview` — предпросмотр продакшен сборки
+- `lint` — линтинг (если подключён ESLint)
+
+---
+
+## Структура проекта
 
 ```
 src/
-  api/                 # вызовы к бэку (пока заглушки)
   assets/
-    icons/
+    data/
+      chemicalInfo.ts      # данные для Менделеева (period, group, mass, ...)
+      solubility.ts        # матрица растворимости (кат/анион -> P/M/H/-)
   components/
-    atoms/             # BaseButton, BaseCard, BaseInput, BaseTag …
-    i18n/
-      LocalizedLink.vue
-    layout/
-      AppHeader.vue
-      AppSidebar.vue
-    ui/                # UILoader, UIToast, UITopBarProgress …
-  composables/
-    useL10nRoute.js    # локализатор маршрутов (push/replace/l10nTo)
-  i18n/
-    index.js           # createI18n + lazy-load JSON
-    locales/
-      ru.json
-      kk.json
-      en.json
-  layout/
-    LocaleView.vue     # host для детей внутри /:locale
-  lib/
-    http.js            # (эскиз) axios-инстанс
+    atoms/
+      BaseButton.vue
+    overlays/
+      FloatingPanel.vue    # универсальная плавающая панель
+    tools/
+      MendeleevPanel.vue   # Таблица Менделеева (VIII в 4 колонки)
+      SolubilityPanel.vue  # Таблица растворимости (кислоты/основания/соли)
+    test/
+      TestTopbar.vue
+      TestSidebar.vue
+      TestPaginator.vue
+      TestQuestion.vue
+      TestAnswerMap.vue
+      TestCalculator.vue
   pages/
-    Dashboard.vue
-    Subjects.vue
-    Tests.vue
-    Forum.vue
-    Login.vue
-    Register.vue
-    admin/
-      Index.vue
-      Dashboard.vue
-      Users.vue
-      Roles.vue
-    teacher/
-      Index.vue
-      Classes.vue
-      Results.vue
-    parent/
-      Index.vue
-      Children.vue
-      Results.vue
-  router/
-    index.js
+    TestRunner.vue         # страница теста (хаб)
   stores/
-    auth.js            # pinia: { user:{name,email,role}, token, isAuthenticated, login, logout }
-    ui.js              # pinia: топбар/тосты/confirm
-  styles/
-    base.css
-    variables.css      # CSS-переменные: --bg, --card, --border, --text, --muted, --accent-color
-  App.vue
-  main.js
-```
-
-**Порядок импортов (строго):**
-
-1. **Libraries** → 2) **Actions/Composables/Helpers** → 3) **Components/Atoms/UI** → 4) **Local state**.  
-   **Именование:** компонент локализованных ссылок — `LocalizedLink` (не `LLink`). Избегаем коротких переменных — используем `localeCode`, `currentLocale` и т.п.
-
----
-
-## i18n
-
-`src/i18n/index.js` — ленивая загрузка JSON, активная локаль хранится в `localStorage` и проставляется в `<html lang>` из гарда.
-
-```js
-import { createI18n } from "vue-i18n";
-const fallbackLocale = "ru";
-const saved = localStorage.getItem("locale") || fallbackLocale;
-
-export const i18n = createI18n({
-  legacy: false,
-  locale: saved,
-  fallbackLocale,
-  messages: {},
-});
-
-export async function loadLocale(localeCode) {
-  if (i18n.global.availableLocales.includes(localeCode)) {
-    i18n.global.locale.value = localeCode;
-    return;
-  }
-  const msgs = await import(`./locales/${localeCode}.json`);
-  i18n.global.setLocaleMessage(localeCode, msgs.default || msgs);
-  i18n.global.locale.value = localeCode;
-}
-```
-
-**Ключи** (минимум): `app.*`, `auth.*`, `common.*`, `roles.*`, `admin.*`, `teacher.*`, `parent.*`, `dashboard.*`, `subjects.*`, `topics.*`.
-
-Актуальный `ru.json` (фрагмент):
-
-```json
-{
-  "roles": {
-    "admin": "Администратор",
-    "student": "Ученик",
-    "teacher": "Преподаватель",
-    "parent": "Родитель"
-  },
-  "admin": {
-    "section": "Главный админ",
-    "open": "Администрирование",
-    "dashboard": "Панель администратора",
-    "users": "Пользователи",
-    "roles": "Роли и доступ"
-  },
-  "teacher": {
-    "classes": "Мои классы",
-    "assignments": "Назначения",
-    "qbank": "Банк вопросов",
-    "results": "Результаты"
-  },
-  "parent": { "children": "Мои дети", "results": "Результаты" }
-}
+    auth.ts
+  i18n/
+    index.ts               # подключение переводов
 ```
 
 ---
 
-## Локализованные ссылки и переходы
+## Страница теста (`pages/TestRunner.vue`)
 
-### Компонент `LocalizedLink`
+Главный экран прохождения теста. Включает:
 
-`src/components/i18n/LocalizedLink.vue` — обёртка над `<RouterLink>`, автоматически добавляет префикс текущей локали, поддерживает именованные и строковые пути, внешние ссылки — как есть.
+- **Topbar** (`TestTopbar.vue`): имя пользователя, навигация по предметам (влево/вправо).
+- **Sidebar** (`TestSidebar.vue`): список предметов и инструменты. Поддерживает режим **rail** — компактная колонка с иконками (`collapsed`).
+- **Paginator** (`TestPaginator.vue`): пагинация по вопросам текущего предмета.
+- **Question** (`TestQuestion.vue`): рендер вопроса и вариантов.
+- **Answer Map** (`TestAnswerMap.vue`): карта ответов по всем предметам.
+- **Calculator** (`TestCalculator.vue`): простой калькулятор, открывается во всплывающей панели.
+- **MendeleevPanel** (`tools/MendeleevPanel.vue`): таблица Менделеева (см. ниже).
+- **SolubilityPanel** (`tools/SolubilityPanel.vue`): таблица растворимости (см. ниже).
 
-**Пример**
+### Навигация и состояние
 
-```vue
-<LocalizedLink
-  :to="{ name: 'dashboard' }"
-  exact-active-class="router-link-exact-active"
->
-  {{ t('common.dashboard') }}
-</LocalizedLink>
-<LocalizedLink to="tests">{{ t('common.tests') }}</LocalizedLink>
-<LocalizedLink to="/subjects">{{ t('common.subjects') }}</LocalizedLink>
-<LocalizedLink
-  to="https://docs.example.com"
-  target="_blank"
->Docs</LocalizedLink>
-```
+- Список предметов задаётся в `subjects` (3 обязательных + 2 выборочных).
+- Вопросы лежат в `allQuestions` (моки). Фильтрация по текущему предмету — через `computed`.
+- Ответы: `Map<questionId, Set<choiceId>>`. Поддержка одиночного/множественного выбора.
+- Переключение предметов сбрасывает индекс вопроса (`watch(currentSubject)`).
 
-### Компосабл `useL10nRoute`
+### Лэйаут
 
-`src/composables/useL10nRoute.js` — локализатор маршрутов в коде.
-
-```js
-/*
-Usage
-import { useL10nRoute } from "@/composables/useL10nRoute";
-const { l10nTo, pushL10n, replaceL10n, localeCode } = useL10nRoute();
-await pushL10n({ name: "tests" });
-router.push(l10nTo("subjects"));      // → "/kk/subjects"
-router.replace(l10nTo("/forum"));     // абсолютный
-window.open(l10nTo("https://docs.example.com"), "_blank");
-*/
-```
+- Основная сетка: `grid` с колонками **sidebar + main**. Высота: `calc(100vh - 48px)`.
+- `.main`— `grid-auto-rows: min-content; align-content: start;` чтобы контент не растягивал ряды.
+- Сайдбар имеет «узкий» режим: класс `rail` уменьшает паддинги и скрывает подписи (только иконки).
 
 ---
 
-## Роутер и навигационные гарды
+## FloatingPanel.vue
 
-Все приватные страницы под `/:locale(ru|kk|en)`.
+Универсальная обёртка для плавающих инструментов.
 
-Главные правила:
+**Основные пропсы:**
 
-- `/` → редирект на сохранённую/дефолтную локаль
-- публичные: `/:locale/login`, `/:locale/register`
-- приватные: `/:locale`, `/:locale/subjects`, `/:locale/tests`, `/:locale/forum`
-- роль-доступ через `meta.roles` и проверку в `beforeEach`
+- `x`, `y` — стартовая позиция
+- `width`, `height` — габариты
+- `title` — заголовок
+- `persist-key` — ключ для сохранения положения/размера в `localStorage`
+- `@close` — эмит закрытия
 
-**Фрагмент `src/router/index.js` (с доп. модулями админа/препода/родителя):**
-
-```js
-{
-  path: ":/locale(ru|kk|en)",
-  component: LocaleView,
-  children: [
-    { path: "login",    name: "login",    component: Login,    meta: { requiresAuth: false, layout: "auth" } },
-    { path: "register", name: "register", component: Register, meta: { requiresAuth: false, layout: "auth" } },
-
-    // приватные базовые
-    { path: "",          name: "dashboard", component: Dashboard },
-    { path: "subjects",  name: "subjects",  component: Subjects },
-    { path: "forum",     name: "forum",     component: Forum },
-    { path: "tests",     name: "tests",     component: Tests },
-
-    // admin (только admin)
-    {
-      path: "admin",
-      component: () => import("@/pages/admin/Index.vue"),
-      meta: { roles: ["admin"] },
-      children: [
-        { path: "",       name: "admin-home",  component: () => import("@/pages/admin/Dashboard.vue"), meta: { roles: ["admin"] } },
-        { path: "users",  name: "admin-users", component: () => import("@/pages/admin/Users.vue"),     meta: { roles: ["admin"] } },
-        { path: "roles",  name: "admin-roles", component: () => import("@/pages/admin/Roles.vue"),     meta: { roles: ["admin"] } },
-      ],
-    },
-
-    // teacher (teacher и admin)
-    {
-      path: "teacher",
-      component: () => import("@/pages/teacher/Index.vue"),
-      meta: { roles: ["teacher", "admin"] },
-      children: [
-        { path: "classes", name: "teacher-classes", component: () => import("@/pages/teacher/Classes.vue") },
-        { path: "results", name: "teacher-results", component: () => import("@/pages/teacher/Results.vue") },
-      ],
-    },
-
-    // parent (parent и admin)
-    {
-      path: "parent",
-      component: () => import("@/pages/parent/Index.vue"),
-      meta: { roles: ["parent", "admin"] },
-      children: [
-        { path: "children", name: "parent-children", component: () => import("@/pages/parent/Children.vue") },
-        { path: "results",  name: "parent-results",  component: () => import("@/pages/parent/Results.vue") },
-      ],
-    },
-  ],
-}
-```
-
-**Проверка роли в `beforeEach`:**
-
-```js
-const auth = useAuthStore();
-const needRoles = to.meta?.roles;
-if (needRoles && !needRoles.includes(auth.role?.value ?? auth.role)) {
-  return {
-    name: "dashboard",
-    params: { locale: to.params.locale },
-    query: { denied: 1 },
-  };
-}
-```
+Панель адаптивна: стартовые координаты прижимаются к правому краю, размеры ограничиваются отступами окна.
 
 ---
 
-## Авторизация (Pinia)
+## Таблица Менделеева (`tools/MendeleevPanel.vue`)
 
-`src/stores/auth.js` — хранит **одну роль** в `user.role` (упростили модель). Всё состояние переживает F5 (persist в `localStorage`).
+Реализована «старая» схема: группа **VIII** разбита на четыре колонки (как на предоставленном референсе).
 
-Особенности mvp:
+### Ключевые моменты
 
-- Временная мапа ролей по email (для демо):
-  - `asan@gmail.com` → `admin`
-  - `asan-st@gmail.com` → `student`
-  - `asan-t@gmail.com` → `teacher`
-  - `asan-p@gmail.com` → `parent`
-  - прочие → `student`
-- **TODO удалить перед продом**, роли должны приходить с бэка.
-
-API стора (минимум):
-
-- `user: { name, email, role } | null`
-- `token: string | null`
-- `isAuthenticated: boolean`
-- `login({ email, password })`
-- `register({ name, email, password })`
-- `logout()`
-- `role` (computed), `hasRole(role)`, `hasAnyRole(list)`
+- Автоматический расчёт размеров панели в `onMounted` + реакция на `resize` (`recalc()`), чтобы таблица не вылезала за экран.
+- Данные берутся из `assets/data/chemicalInfo.ts`.
+- Цветовые классы ячеек: `col1`, `col2`, `col4`, `col5` — совпадают с визуалом референса.
+- Ховер‑зум ячейки: лёгкий scale и inner‑shadow.
+- Фиксированные шапки таблицы (`position: sticky`) для удобства скролла.
 
 ---
 
-## Сайдбар и роли
+## Таблица растворимости (`tools/SolubilityPanel.vue`)
 
-### Teacher
+Интерактивная таблица растворимости кислот/оснований/солей в воде **с точным совпадением данных** с референсным изображением.
 
-Если роль `teacher` (или `admin`), **перед** «Дэшборд» показываем:
+### Данные (`assets/data/solubility.ts`)
 
-- «Мои классы» (`teacher-classes`)
-- «Результаты» (`teacher-results`)
+- `cations: string[]` — заголовки столбцов (например: `"H⁺", "Li⁺", "NH₄⁺", ...`).
+- `anions: string[]` — заголовки строк (например: `"OH⁻", "NO₃⁻", ...`).
+- `solubility: string[][]` — матрица значений по порядку `anions × cations`.
+  - **Значения:** `"P"` — растворяются; `"M"` — малорастворимы; `"H"` — не растворяются; `"-"` — разлагаются; `""` — пустая ячейка.
+- `activityRow: string` — ряд активности металлов (строка‑подпись под таблицей).
 
-### Parent
+### UI/UX
 
-Если роль `parent` (или `admin`), **перед** «Дэшборд» показываем:
+- Липкие заголовки (`sticky`) + горизонтальный/вертикальный скролл внутри панели.
+- Легенда снизу: цветные «чипы» для P/M/H/–.
+- Цветовые классы совпадают с палитрой Менделеева для консистентности.
 
-- «Мои дети» (`parent-children`)
-- «Результаты» (`parent-results`)
-
-### Admin
-
-Внизу сайдбара — кнопка «Администрирование». По клику открывается всплывающая панель со ссылками:
-
-- Admin Dashboard (`admin-home`)
-- Users (`admin-users`)
-- Roles (`admin-roles`)
-
-Панель закрывается по клику вне, позиционируется над кнопкой.
+> Примечание: значения выверены по референсу; начиная с колонки `Ag⁺` исправлены расхождения (`Ag⁺` vs `P`/`-` и др.).
 
 ---
 
-## Хедер (язык + мини-профиль)
+## Локализация (vue‑i18n)
 
-Справа: селект языка (RU/KK/EN), рядом мини-профиль (имя + строка роли), кнопка `→` для логаута. Когда не залогинен — кнопка «Вход».
+Ключи, использующиеся в тестовом экране:
 
-Отображение роли берём из i18n: `t('roles.' + (auth.role || 'student'))`.
-
----
-
-## Дашборд — UX (MVP)
-
-- Сначала выбор предмета (активны: **Математика**, **Информатика**; остальные — disabled с бейджем «Скоро»)
-- После выбора — список тем (чипсы), мультивыбор
-- Типы вопросов: `type_single` | `type_multi` | `type_context`
-- Текстовая область под промпт + контекст, кнопка «Сгенерировать» (пока тост)
-
-Стили кликабельных элементов — через утилиту `.clickable` и модификатор `.is-active`.
+- `ent.literacy`, `ent.math_literacy`
+- `subjects.history`, `subjects.math`, `subjects.cs`
+- `test.sections`, `test.tools`, `test.answer_map`, `test.calculator`, `test.mendeleev`, `test.solubility`
+- `test.section`, `test.question_no`, `test.prev`, `test.next`
 
 ---
 
-## CSS-утилиты (фрагмент)
+## Стили и темы
 
-```css
-.clickable {
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.15s, box-shadow 0.15s, border-color 0.15s, color
-      0.15s, transform 0.05s;
-}
-.clickable:hover {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent-color) 22%, transparent);
-}
-.clickable:active {
-  transform: translateY(0.5px);
-}
-.clickable.is-active {
-  background: color-mix(in oklab, var(--accent-color) 14%, var(--card));
-  color: var(--text);
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent-color) 28%, transparent),
-    inset 0 0 0 1px color-mix(in oklab, var(--accent-color) 35%, var(--border));
-}
-```
+- Используются CSS custom properties: `--bg`, `--bg-elev`, `--card`, `--text`, `--muted`, `--border`, `--accent-color`, `--radius-sm`, т.д.
+- Цветовые миксы через `color-mix(in oklab, ...)`.
+- Размеры/отступы синхронизированы между панелями для единообразия.
 
 ---
 
-## Дорожная карта (кратко)
+## Известные моменты / нотсы
 
-1. Teacher → Assignments & QBank (формы, списки)
-2. Parent → Results (фильтры по ребёнку), Schedule
-3. Tests → сессия/ревью/история
-4. Admin → Users/Roles (минимальная логика)
-5. Генерация вопросов → интеграция с бэком
-6. Персист выбора `subject/topics/type` в Pinia/LS
+- Плотность таблиц велика → минимальная ширина контента задаётся явно (`min-width`) чтобы не ломать сетку при узком окне.
+- В модалках прокрутка включена на теле панели, а заголовки — `sticky`.
 
 ---
 
-## FAQ
+## TODO / дальше
 
-- **Почему раньше “Dashboard” подсвечивался везде?** Исправлено: используем точный класс `router-link-exact-active`.
-- **Почему локали из JSON не подтягивались?** Включена ленивая загрузка и установка `<html lang>` в гардe.
-- **Почему роль “слетала” после F5?** Состояние `user`/`token` сохраняем в `localStorage`, роль хранится в `user.role`.
+- Поиск по таблицам (фильтр элементов/ионов).
+- Горячие клавиши: открыть калькулятор/панели.
+- Экспорт таблиц в PDF/PNG (через html2canvas/print‑layout).
+- Валидация ответов и подсчёт результатов теста.
+- ESLint + Prettier конфиг в репо.
+
+---
+
+## Лицензия
+
+MIT (если не указано иначе).
