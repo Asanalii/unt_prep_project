@@ -28,15 +28,19 @@ defineProps({
 <style scoped>
 .cards {
   display: grid;
-  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
+
 .card {
   border: 1px solid var(--border);
   background: var(--bg);
   border-radius: 12px;
   padding: 14px;
+  min-width: 0;
+  overflow: hidden;
 }
+
 .k {
   font-size: 22px;
   font-weight: 700;

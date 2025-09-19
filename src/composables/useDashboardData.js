@@ -7,7 +7,7 @@ export function useDashboardData() {
     name: "Aruzhan T.",
   });
 
-  // Моки попыток (read-only, нельзя продолжить)
+  // === Статусы попыток (read-only список внизу)
   const attempts = ref([
     {
       id: "a1",
@@ -15,7 +15,7 @@ export function useDashboardData() {
       startedAt: "2025-09-15T09:10:00Z",
       durationSec: 47 * 60,
       score: 72,
-      status: "completed", // completed | in_progress | review_required
+      status: "completed",
       meta: { title: "Алгебра. Блок A" },
     },
     {
@@ -37,27 +37,17 @@ export function useDashboardData() {
       meta: { title: "CS. Алгоритмы (свободные ответы)" },
     },
     {
-      id: "a4",
-      subject: "literacy",
-      startedAt: "2025-09-22T07:00:00Z",
-      durationSec: 60 * 60,
-      score: 64,
-      status: "completed",
-      meta: { title: "Чит. грамотность. Практикум" },
-    },
-    {
       id: "a5",
       subject: "mathlit",
       startedAt: "2025-09-23T10:45:00Z",
       durationSec: 42 * 60,
       score: 55,
-      status: "in_progress", // отображаем как «есть незавершённая», но продолжать нельзя
+      status: "in_progress",
       meta: { title: "Матем. грамотность. Тест №3" },
     },
   ]);
 
-  const loading = ref(false);
-
+  // === Сводка
   const summary = computed(() => {
     const total = attempts.value.length;
     const done = attempts.value.filter((a) => a.status === "completed").length;
@@ -76,10 +66,57 @@ export function useDashboardData() {
     };
   });
 
+  // === Hold / Approved (анти-читинг витрины)
+  // Одна из них может быть не null
+  const hold = ref({ attemptId: "a6", since: "2025-09-24T07:10:00Z" }); // ожидание разрешения
+  const approvedResume = ref(null);
+  // пример разрешения:
+  // const approvedResume = ref({ attemptId: 'a6', until: '2025-09-24T12:00:00Z' }); hold.value = null
+
+  // === Тренд (для спарклайна)
+  const trend = ref({
+    period: "7d",
+    points: [60, 62, 65, 70, 68, 74, 72],
+  });
+
+  // === Темы
+  const weakTopics = ref([
+    { id: "w1", name: "Вероятность", correct: 42 },
+    { id: "w2", name: "Хим. уравнения", correct: 48 },
+    { id: "w3", name: "Ист. даты (XVIII)", correct: 51 },
+  ]);
+  const strongTopics = ref([
+    { id: "s1", name: "Линейные функции", correct: 91 },
+    { id: "s2", name: "Алгоритмы (база)", correct: 88 },
+    { id: "s3", name: "Лексический анализ", correct: 86 },
+  ]);
+
+  // === Дедлайн экзамена
+  const examDate = ref("2025-11-20T09:00:00Z");
+
+  // === Активность
+  const activity = ref([
+    {
+      id: "ev1",
+      ts: "2025-09-23T12:00:00Z",
+      text: "Завершена попытка по Чит. грамотности (64%)",
+    },
+    {
+      id: "ev2",
+      ts: "2025-09-20T08:40:00Z",
+      text: "Отправлена на проверку попытка по CS",
+    },
+    {
+      id: "ev3",
+      ts: "2025-09-17T13:25:00Z",
+      text: "Новый рекорд: История Казахстана — 81%",
+    },
+  ]);
+
+  const loading = ref(false);
   async function fetchAll() {
     loading.value = true;
-    // имитация запроса
-    await new Promise((r) => setTimeout(r, 400));
+    await new Promise((r) => setTimeout(r, 350));
     loading.value = false;
   }
 
@@ -89,5 +126,12 @@ export function useDashboardData() {
     summary,
     loading,
     fetchAll,
+    hold,
+    approvedResume,
+    trend: trend.value,
+    weakTopics: weakTopics.value,
+    strongTopics: strongTopics.value,
+    examDate: examDate.value,
+    activity: activity.value,
   };
 }

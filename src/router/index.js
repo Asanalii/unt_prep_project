@@ -82,6 +82,12 @@ const routes = [
       },
 
       {
+        path: "/attempt/:id",
+        name: "attempt",
+        component: () => import("@/pages/AttemptView.vue"),
+      },
+
+      {
         path: "tests/run",
         name: "test-run",
         component: () => import("@/pages/TestRunner.vue"),
