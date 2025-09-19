@@ -7,6 +7,7 @@ import TestTopbar from "@/components/test/TestTopbar.vue";
 import TestSidebar from "@/components/test/TestSidebar.vue";
 import TestPaginator from "@/components/test/TestPaginator.vue";
 import TestQuestion from "@/components/test/TestQuestion.vue";
+import BaseButton from "../components/atoms/BaseButton.vue";
 
 const { t } = useI18n();
 const auth = useAuthStore();
@@ -433,16 +434,21 @@ const collapsed = ref(false);
           <div class="meta">
             <span>{{ t("test.question_no", { n: qIndex + 1 }) }}</span>
             <div class="sp"></div>
-            <button class="ghost" :disabled="qIndex === 0" @click="prevQ">
+            <BaseButton
+              variant="ghost"
+              size="md"
+              :disabled="qIndex === 0"
+              @click="prevQ"
+            >
               {{ t("test.prev") }}
-            </button>
-            <button
-              class="primary"
+            </BaseButton>
+            <BaseButton
+              size="md"
               :disabled="qIndex === total - 1"
               @click="nextQ"
             >
               {{ t("test.next") }}
-            </button>
+            </BaseButton>
           </div>
         </div>
 
@@ -507,30 +513,5 @@ const collapsed = ref(false);
 }
 .meta .sp {
   width: 6px;
-}
-
-button.primary {
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--accent-color);
-  background: color-mix(in oklab, var(--accent-color) 14%, var(--card));
-  color: var(--text);
-  cursor: pointer;
-}
-button.primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-button.ghost {
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  cursor: pointer;
-}
-button.ghost:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 </style>

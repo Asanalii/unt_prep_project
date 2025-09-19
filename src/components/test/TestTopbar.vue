@@ -1,6 +1,8 @@
 <script setup>
+import BaseButton from "@/components/atoms/BaseButton.vue";
+
 const props = defineProps({
-  subject: { type: Object, required: true }, // { id, name }
+  subject: { type: Object, required: true },
   username: { type: String, required: true },
   hasPrev: { type: Boolean, default: false },
   hasNext: { type: Boolean, default: false },
@@ -17,28 +19,35 @@ const emit = defineEmits(["toggle-menu", "prev-subject", "next-subject"]);
     >
       ☰
     </button>
+
     <div class="top-title">
       {{ $t("test.subject") }}: <b>{{ subject.name }}</b>
     </div>
+
     <div class="top-right">
       <div class="username">{{ username }}</div>
-      <button class="ghost" :disabled="!hasPrev" @click="emit('prev-subject')">
+      <BaseButton
+        variant="ghost"
+        size="md"
+        :disabled="!hasPrev"
+        @click="emit('prev-subject')"
+      >
         {{ $t("test.prev_subject") }}
-      </button>
-      <button
-        class="primary"
+      </BaseButton>
+      <BaseButton
+        variant="primary"
+        size="md"
         :disabled="!hasNext"
         @click="emit('next-subject')"
       >
         {{ $t("test.next_subject") }}
-      </button>
+      </BaseButton>
     </div>
   </header>
 </template>
 
 <style scoped>
 .top {
-  position: relative;
   display: flex;
   align-items: center;
   gap: var(--s-3);
@@ -59,23 +68,19 @@ const emit = defineEmits(["toggle-menu", "prev-subject", "next-subject"]);
   color: var(--text);
   font-weight: 600;
 }
+.icon {
+  width: 32px;
+  height: 32px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 10px;
+
+  cursor: pointer;
+}
 
 .ghost {
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
-}
-.primary {
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--accent-color);
-  background: color-mix(in oklab, var(--accent-color) 14%, var(--card));
-  color: var(--text);
-}
-
-button {
-  cursor: pointer;
 }
 </style>
