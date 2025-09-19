@@ -78,6 +78,13 @@ const routes = [
         meta: { roles: ["student", "teacher", "admin"] },
       },
 
+      {
+        path: "tests/run",
+        name: "test-run",
+        component: () => import("@/pages/TestRunner.vue"),
+        meta: { hideChrome: true, layout: "test" },
+      },
+
       // teacher
       {
         path: "teacher",
