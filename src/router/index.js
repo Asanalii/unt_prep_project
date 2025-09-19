@@ -5,6 +5,7 @@ import { i18n, loadLocale } from "../i18n";
 
 // страницы
 import Dashboard from "../pages/Dashboard.vue";
+import Chat from "../pages/Chat.vue";
 import Subjects from "../pages/Subjects.vue";
 import Forum from "../pages/Forum.vue";
 import Tests from "../pages/Tests.vue";
@@ -66,6 +67,8 @@ const routes = [
 
       // приватные
       { path: "", name: "dashboard", component: Dashboard }, // "/:locale"
+
+      { path: "chat", name: "chat", component: Chat }, // "/:locale"
 
       { path: "subjects", name: "subjects", component: Subjects },
 

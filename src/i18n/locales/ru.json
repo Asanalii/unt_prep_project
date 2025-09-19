@@ -101,7 +101,47 @@
     "type_mcq": "Тест (варианты)",
     "type_open": "Открытый ответ",
     "prompt_placeholder": "Опишите промпт + контекст для генерации вопросов",
-    "generate": "Сгенерировать"
+    "generate": "Сгенерировать",
+    "greeting": "Здравствуйте, {name}",
+    "refresh": "Обновить",
+    "apply": "Применить",
+    "reset": "Сброс",
+    "loading": "Загрузка…",
+    "empty": "Ничего не найдено",
+    "view": "Открыть",
+    "cards": {
+      "totalAttempts": "Попытки",
+      "avgScore": "Средний балл",
+      "completed": "Завершено",
+      "inProgress": "В процессе"
+    },
+    "filters": {
+      "search": "Поиск…",
+      "subject_all": "Все предметы",
+      "status_all": "Любой статус",
+      "status_completed": "Завершено",
+      "status_in_progress": "В процессе",
+      "status_review_required": "Требует проверки"
+    },
+    "sort": {
+      "newest": "Сначала новые",
+      "oldest": "Сначала старые",
+      "score_desc": "Балл: по убыванию",
+      "score_asc": "Балл: по возрастанию"
+    },
+    "table": {
+      "subject": "Предмет",
+      "started": "Начат",
+      "duration": "Длительность",
+      "score": "Балл",
+      "status": "Статус",
+      "actions": "Действия"
+    },
+    "status": {
+      "completed": "Завершено",
+      "in_progress": "В процессе",
+      "review_required": "Требует проверки"
+    }
   },
   "subjects": {
     "math": "Математика",
