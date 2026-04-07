@@ -3,6 +3,7 @@
     "name": "UNT Prep",
     "beta": "Бета"
   },
+
   "auth": {
     "login": "Вход",
     "register": "Регистрация",
@@ -22,8 +23,42 @@
     "password_mismatch": "Пароли не совпадают",
     "register_success": "Регистрация успешна! Теперь войдите.",
     "register_error": "Ошибка регистрации",
-    "logged_out": "Вы вышли из аккаунта"
+    "logged_out": "Вы вышли из аккаунта",
+    "enter_name": "Введите имя",
+    "enter_email": "Введите email",
+    "enter_password": "Введите пароль",
+    "password_too_short": "Пароль должен быть не менее 6 символов",
+    "login_error": "Ошибка входа"
   },
+
+  "forum": {
+    "search_placeholder": "Найти тему...",
+    "create_topic": "Создать тему",
+    "cancel_create": "Отмена",
+    "new_topic": "Новая тема",
+    "title": "Заголовок",
+    "title_placeholder": "Например: Как решать логарифмы?",
+    "subject": "Предмет",
+    "message": "Сообщение",
+    "message_placeholder": "Опишите вопрос подробнее",
+    "images": "Изображения",
+    "publish": "Опубликовать",
+    "creating": "Создаём…",
+    "reply": "Ответить",
+    "reply_placeholder": "Напишите ответ",
+    "send_reply": "Отправить ответ",
+    "replying": "Отправляем…",
+    "empty": "Тем пока нет",
+    "load_error": "Не удалось загрузить форум",
+    "create_success": "Тема успешно создана",
+    "create_error": "Не удалось создать тему",
+    "reply_success": "Ответ добавлен",
+    "reply_error": "Не удалось отправить ответ",
+    "enter_title": "Введите заголовок темы",
+    "enter_body": "Введите текст темы",
+    "enter_reply": "Введите текст ответа"
+  },
+
   "common": {
     "name": "Имя",
     "subjects": "Предметы",

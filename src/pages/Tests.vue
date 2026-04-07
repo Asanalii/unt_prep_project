@@ -11,10 +11,14 @@ onMounted(async () => {
 });
 
 async function onStart(t) {
-  const res = await startTest({ id: t.id });
-  alert(
-    `Старт теста: ${res.data.attemptId} (вопросы: ${res.data.questions.length})`
-  );
+  // console.log(t);
+  window.location.href = "http://localhost:5175/ru/tests/run";
+
+  // window.location.href =
+  // const res = await startTest({ id: t.id });
+  // alert(
+  //   `Старт теста: ${res.data.attemptId} (вопросы: ${res.data.questions.length})`
+  // );
 }
 </script>
 

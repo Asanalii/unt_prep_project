@@ -1,107 +1,148 @@
+// src/stores/auth.js
+import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
 
-/** mock "БД" в LS */
-function getUsers() {
-  return JSON.parse(localStorage.getItem("users") || "[]");
-}
-function setUsers(users) {
-  localStorage.setItem("users", JSON.stringify(users));
-}
+import {
+  loginRequest,
+  registerRequest,
+  meRequest,
+  refreshRequest,
+  logoutRequest,
+} from "@/services/authService";
 
-// TODO: убрать перед продом
-const ROLE_BY_EMAIL = {
-  "asan@gmail.com": "admin",
-  "asan-st@gmail.com": "student",
-  "asan-t@gmail.com": "teacher",
-  "asan-p@gmail.com": "parent",
-};
-
-const LS_TOKEN = "token";
-const LS_USER = "user"; // { name, email, role }
+import {
+  getAccessToken,
+  getRefreshToken,
+  clearTokens,
+} from "@/services/tokenService";
 
 export const useAuthStore = defineStore("auth", () => {
-  // ==== инициализация из LS ====
-  const token = ref(localStorage.getItem(LS_TOKEN) || null);
-  const user = ref(JSON.parse(localStorage.getItem(LS_USER) || "null")); // {name,email,role}|null
+  const user = ref(null);
+  const loading = ref(false);
+  const initialized = ref(false);
 
-  // миграция старого формата (если вдруг был user без role, либо отдельные roles[])
-  if (user.value && !user.value.role) {
-    // попытка угадать по email
-    const guessed =
-      ROLE_BY_EMAIL[(user.value.email || "").toLowerCase()] || "student";
-    user.value = { ...user.value, role: guessed };
-    localStorage.setItem(LS_USER, JSON.stringify(user.value));
+  const accessToken = computed(() => getAccessToken());
+  const refreshToken = computed(() => getRefreshToken());
+
+  const isAuthenticated = computed(() => !!accessToken.value);
+
+  const role = computed(() => user.value?.role || null);
+
+  async function login(payload) {
+    loading.value = true;
+
+    try {
+      await loginRequest(payload);
+
+      const token = getAccessToken();
+      const me = await meRequest(token);
+
+      user.value = me;
+      return me;
+    } catch (error) {
+      clearTokens();
+      user.value = null;
+      throw normalizeAuthError(error);
+    } finally {
+      loading.value = false;
+    }
   }
 
-  const isAuthenticated = computed(() => !!token.value);
-  const role = computed(() => user.value?.role || "student");
+  async function register(payload) {
+    loading.value = true;
 
-  function persist() {
-    if (token.value) localStorage.setItem(LS_TOKEN, token.value);
-    else localStorage.removeItem(LS_TOKEN);
-
-    if (user.value) localStorage.setItem(LS_USER, JSON.stringify(user.value));
-    else localStorage.removeItem(LS_USER);
+    try {
+      const result = await registerRequest(payload);
+      return result;
+    } catch (error) {
+      throw normalizeAuthError(error);
+    } finally {
+      loading.value = false;
+    }
   }
 
-  function _setSession({ tokenValue, userValue }) {
-    token.value = tokenValue || null;
-    user.value = userValue || null;
-    persist();
+  async function fetchMe() {
+    const token = getAccessToken();
+
+    if (!token) {
+      user.value = null;
+      return null;
+    }
+
+    try {
+      const me = await meRequest(token);
+      user.value = me;
+      return me;
+    } catch (error) {
+      user.value = null;
+      clearTokens();
+      throw normalizeAuthError(error);
+    }
   }
 
-  async function register({ name, email, password }) {
-    if (!name || !email || !password) throw new Error("Заполните все поля");
-    const users = getUsers();
-    if (users.find((u) => u.email === email))
-      throw new Error("Пользователь уже существует");
+  async function tryRestoreSession() {
+    if (initialized.value) return;
 
-    const roleForUser = ROLE_BY_EMAIL[email.toLowerCase()] || "student";
-    users.push({ name, email, password, role: roleForUser }); // пароли не хэшируем — только для демо
-    setUsers(users);
-    return true;
-  }
+    try {
+      const token = getAccessToken();
 
-  async function login({ email, password }) {
-    const users = getUsers();
-    const found = users.find(
-      (u) => u.email === email && u.password === password
-    );
-    if (!found) throw new Error("Неверный email или пароль");
+      if (!token) {
+        user.value = null;
+        return;
+      }
 
-    const roleForUser =
-      found.role || ROLE_BY_EMAIL[email.toLowerCase()] || "student";
-    const tokenValue = "mock-" + Math.random().toString(36).slice(2, 8);
+      await fetchMe();
+    } catch (_error) {
+      try {
+        const hasRefresh = getRefreshToken();
 
-    _setSession({
-      tokenValue,
-      userValue: { name: found.name, email: found.email, role: roleForUser },
-    });
-    return true;
+        if (!hasRefresh) {
+          user.value = null;
+          clearTokens();
+          return;
+        }
+
+        await refreshRequest();
+        await fetchMe();
+      } catch (_refreshError) {
+        user.value = null;
+        clearTokens();
+      }
+    } finally {
+      initialized.value = true;
+    }
   }
 
   function logout() {
-    _setSession({ tokenValue: null, userValue: null });
-  }
-
-  // Хелперы
-  function hasRole(expected) {
-    return role.value === expected;
-  }
-  function hasAnyRole(list) {
-    return list.includes(role.value);
+    logoutRequest();
+    user.value = null;
+    initialized.value = true;
   }
 
   return {
     user,
-    role,
-    token,
+    loading,
+    initialized,
+
+    accessToken,
+    refreshToken,
     isAuthenticated,
-    register,
+    role,
+
     login,
+    register,
+    fetchMe,
+    tryRestoreSession,
     logout,
-    hasRole,
-    hasAnyRole,
   };
 });
+
+function normalizeAuthError(error) {
+  const message =
+    error?.response?.data?.detail ||
+    error?.response?.data?.message ||
+    error?.message ||
+    "Auth error";
+
+  return new Error(message);
+}

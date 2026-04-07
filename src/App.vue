@@ -1,5 +1,10 @@
+<!-- App.vue -->
 <script setup>
 import { useRoute } from "vue-router";
+import { computed, onMounted } from "vue";
+
+import { useAuthStore } from "./stores/auth";
+
 import AppSidebar from "./components/layout/AppSidebar.vue";
 import AppHeader from "./components/layout/AppHeader.vue";
 
@@ -8,10 +13,16 @@ import UiToast from "./components/ui/UiToast.vue";
 import UiConfirm from "./components/ui/UiConfirm.vue";
 import UiLoader from "./components/ui/UiLoader.vue";
 import UiTopBarProgress from "./components/ui/UiTopBarProgress.vue";
-import { computed } from "vue";
 
 const route = useRoute();
+
+const auth = useAuthStore();
+
 const hideChrome = computed(() => route.meta.hideChrome === true);
+
+onMounted(() => {
+  auth.tryRestoreSession();
+});
 </script>
 
 <template>

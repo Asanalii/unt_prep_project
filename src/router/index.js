@@ -1,41 +1,47 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { useAuthStore } from "../stores/auth";
-import { useUiStore } from "../stores/ui";
-import { i18n, loadLocale } from "../i18n";
+import { useAuthStore } from "@/stores/auth";
+import { useUiStore } from "@/stores/ui";
+import { i18n, loadLocale } from "@/i18n";
 
 // страницы
-import Dashboard from "../pages/Dashboard.vue";
-import Chat from "../pages/Chat.vue";
-import Subjects from "../pages/Subjects.vue";
-import Forum from "../pages/Forum.vue";
-import Tests from "../pages/Tests.vue";
-import Login from "../pages/Login.vue";
-import Register from "../pages/Register.vue";
-import LocaleView from "../layout/LocaleView.vue";
+import Dashboard from "@/pages/Dashboard.vue";
+import Chat from "@/pages/Chat.vue";
+import Subjects from "@/pages/Subjects.vue";
+import ForumPage from "../pages/forum/ForumPage.vue";
+import Tests from "@/pages/Tests.vue";
+import Login from "@/pages/auth/LoginPage.vue";
+import Register from "@/pages/auth/RegisterPage.vue";
+import LocaleView from "@/layout/LocaleView.vue";
 
 // Поддерживаемые локали
 export const supportedLocales = ["ru", "kk", "en"];
 export const LOCALE_RE = "ru|kk|en";
 
-// Определить локаль по saved/navigator
 function getSavedOrDefaultLocale() {
   const saved = localStorage.getItem("locale");
   if (saved && supportedLocales.includes(saved)) return saved;
-  // простая эвристика по браузеру
+
   const nav = (navigator.language || "ru").toLowerCase();
   if (nav.startsWith("kk")) return "kk";
   if (nav.startsWith("en")) return "en";
+
   return "ru";
 }
 
+function buildLocaleLocation(name, locale, extra = {}) {
+  return {
+    name,
+    params: { locale: locale || getSavedOrDefaultLocale() },
+    ...extra,
+  };
+}
+
 const routes = [
-  // корень без локали → редирект на сохранённую/дефолтную
   {
     path: "/",
     redirect: () => `/${getSavedOrDefaultLocale()}`,
   },
 
-  // старые публичные пути без префикса → на текущую локаль
   {
     path: "/login",
     redirect: () => `/${getSavedOrDefaultLocale()}/login`,
@@ -45,13 +51,10 @@ const routes = [
     redirect: () => `/${getSavedOrDefaultLocale()}/register`,
   },
 
-  // Всё приложение под префиксом локали
   {
-    // path: `/:locale(${LOCALE_RE})`,
     path: `/:locale(${LOCALE_RE})`,
     component: LocaleView,
     children: [
-      // публичные auth-страницы в своём лэйауте
       {
         path: "login",
         name: "login",
@@ -65,14 +68,33 @@ const routes = [
         meta: { requiresAuth: false, layout: "auth" },
       },
 
-      // приватные
-      { path: "", name: "dashboard", component: Dashboard }, // "/:locale"
+      // приватные по умолчанию
+      {
+        path: "",
+        name: "dashboard",
+        component: Dashboard,
+      },
+      {
+        path: "chat",
+        name: "chat",
+        component: Chat,
+      },
+      {
+        path: "subjects",
+        name: "subjects",
+        component: Subjects,
+      },
+      {
+        path: "forum",
+        name: "forum",
+        component: ForumPage,
+      },
 
-      { path: "chat", name: "chat", component: Chat }, // "/:locale"
-
-      { path: "subjects", name: "subjects", component: Subjects },
-
-      { path: "forum", name: "forum", component: Forum },
+      {
+        path: "forum/:id",
+        name: "forum-thread",
+        component: () => import("@/pages/forum/ForumThread.vue"),
+      },
 
       {
         path: "tests",
@@ -81,8 +103,9 @@ const routes = [
         meta: { roles: ["student", "teacher", "admin"] },
       },
 
+      // ВАЖНО: без начального слеша, иначе выпадет из locale children
       {
-        path: "/attempt/:id",
+        path: "attempt/:id",
         name: "attempt",
         component: () => import("@/pages/AttemptView.vue"),
       },
@@ -94,7 +117,6 @@ const routes = [
         meta: { hideChrome: true, layout: "test" },
       },
 
-      // teacher
       {
         path: "teacher",
         component: () => import("@/pages/teacher/Index.vue"),
@@ -105,21 +127,14 @@ const routes = [
             name: "teacher-classes",
             component: () => import("@/pages/teacher/Classes.vue"),
           },
-
           {
             path: "results",
             name: "teacher-results",
             component: () => import("@/pages/teacher/Results.vue"),
           },
-
-          // опционально:
-          // { path: "qbank", name: "teacher-qbank", component: () => import("@/pages/teacher/QBank.vue"), },
-          // { path: "grading",  name: "teacher-grading",  component: () => import("@/pages/teacher/Grading.vue") },
-          // { path: "monitor",  name: "teacher-monitor",  component: () => import("@/pages/teacher/Monitor.vue") },
         ],
       },
 
-      // parent
       {
         path: "parent",
         component: () => import("@/pages/parent/Index.vue"),
@@ -135,13 +150,9 @@ const routes = [
             name: "parent-results",
             component: () => import("@/pages/parent/Results.vue"),
           },
-
-          // можно позже:
-          // { path: "schedule", name: "parent-schedule", component: () => import("@/pages/parent/Schedule.vue") },
         ],
       },
 
-      // admin
       {
         path: "admin",
         component: () => import("@/pages/admin/Index.vue"),
@@ -170,52 +181,103 @@ const routes = [
     ],
   },
 
-  // 404 → на корень с локалью
-  { path: "/:pathMatch(.*)*", redirect: () => `/${getSavedOrDefaultLocale()}` },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: () => `/${getSavedOrDefaultLocale()}`,
+  },
 ];
 
-const router = createRouter({ history: createWebHistory(), routes });
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
 
-// ===== Guards =====
-router.beforeEach(async (to) => {
-  const ui = useUiStore();
-  ui.startTopbar();
+let authRestorePromise = null;
 
-  // 1) валидация и загрузка локали
+async function ensureLocale(to) {
   const locale = to.params.locale;
-  if (locale && !supportedLocales.includes(String(locale))) {
+
+  if (!locale) return null;
+
+  const normalizedLocale = String(locale);
+
+  if (!supportedLocales.includes(normalizedLocale)) {
     return { path: `/${getSavedOrDefaultLocale()}` };
   }
-  if (locale && i18n.global.locale.value !== locale) {
-    await loadLocale(String(locale));
-    localStorage.setItem("locale", String(locale));
-    // для SEO/доступности
-    document.documentElement.setAttribute("lang", String(locale));
+
+  if (i18n.global.locale.value !== normalizedLocale) {
+    await loadLocale(normalizedLocale);
+    localStorage.setItem("locale", normalizedLocale);
+    document.documentElement.setAttribute("lang", normalizedLocale);
   }
 
-  // 2) auth-логика
+  return null;
+}
+
+async function ensureAuthRestored(auth) {
+  if (auth.initialized) return;
+
+  if (!authRestorePromise) {
+    authRestorePromise = auth.tryRestoreSession().finally(() => {
+      authRestorePromise = null;
+    });
+  }
+
+  await authRestorePromise;
+}
+
+router.beforeEach(async (to) => {
+  const ui = useUiStore();
   const auth = useAuthStore();
-  const requiredRoles = to.meta?.roles;
-  if (requiredRoles && !requiredRoles.includes(auth.role)) {
-    return {
-      name: "dashboard",
-      params: { locale: to.params.locale },
-      query: { denied: 1 },
-    };
-  }
 
-  const isAuthPage = to.name === "login" || to.name === "register";
-  if (isAuthPage && auth.isAuthenticated) {
-    return { name: "dashboard", params: { locale } };
-  }
+  ui.startTopbar();
 
-  const needsAuth = to.meta.requiresAuth !== false; // по умолчанию — приватно
-  if (needsAuth && !isAuthPage && !auth.isAuthenticated) {
-    return {
-      name: "login",
-      params: { locale: locale || getSavedOrDefaultLocale() },
-      query: { redirect: to.fullPath },
-    };
+  try {
+    // 1. Локаль
+    const localeRedirect = await ensureLocale(to);
+    if (localeRedirect) return localeRedirect;
+
+    const locale = String(to.params.locale || getSavedOrDefaultLocale());
+
+    // 2. Восстановление сессии один раз перед auth checks
+    await ensureAuthRestored(auth);
+
+    const isAuthPage = to.name === "login" || to.name === "register";
+    const needsAuth = to.meta.requiresAuth !== false;
+    const requiredRoles = to.meta.roles || null;
+
+    // 3. Если уже вошёл — не пускаем на login/register
+    if (isAuthPage && auth.isAuthenticated) {
+      return buildLocaleLocation("dashboard", locale);
+    }
+
+    // 4. Если страница приватная и не авторизован
+    if (needsAuth && !isAuthPage && !auth.isAuthenticated) {
+      return buildLocaleLocation("login", locale, {
+        query: { redirect: to.fullPath },
+      });
+    }
+
+    // 5. Проверка ролей
+    if (requiredRoles && (!auth.role || !requiredRoles.includes(auth.role))) {
+      return buildLocaleLocation("dashboard", locale, {
+        query: { denied: 1 },
+      });
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Router guard error:", error);
+
+    const locale = String(to.params.locale || getSavedOrDefaultLocale());
+
+    if (to.name !== "login") {
+      return buildLocaleLocation("login", locale, {
+        query: { redirect: to.fullPath },
+      });
+    }
+
+    return true;
   }
 });
 
@@ -224,7 +286,8 @@ router.afterEach(() => {
   ui.finishTopbar();
 });
 
-router.onError(() => {
+router.onError((error) => {
+  console.error("Router error:", error);
   const ui = useUiStore();
   ui.failTopbar();
 });

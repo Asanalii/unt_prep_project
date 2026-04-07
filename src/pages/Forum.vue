@@ -1,3 +1,4 @@
+<!-- src/pages/Forum.vue -->
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import BaseCard from "../components/atoms/BaseCard.vue";
@@ -15,8 +16,8 @@ onMounted(async () => {
 
 const filtered = computed(() =>
   threads.value.filter((t) =>
-    t.title.toLowerCase().includes(q.value.toLowerCase())
-  )
+    t.title.toLowerCase().includes(q.value.toLowerCase()),
+  ),
 );
 </script>
 

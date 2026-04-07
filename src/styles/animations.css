@@ -1,3 +1,4 @@
+/* src/styles/animations.css */
 /* ===== Animation tokens ===== */
 :root {
   --motion-fast: 120ms;
@@ -34,7 +35,8 @@
 }
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity var(--motion-med) var(--easing),
+  transition:
+    opacity var(--motion-med) var(--easing),
     transform var(--motion-med) var(--easing);
 }
 
@@ -57,7 +59,8 @@
 }
 .slide-x-enter-active,
 .slide-x-leave-active {
-  transition: transform var(--motion-med) var(--easing),
+  transition:
+    transform var(--motion-med) var(--easing),
     opacity var(--motion-med) var(--easing);
 }
 
@@ -80,7 +83,8 @@
 }
 .pop-enter-active,
 .pop-leave-active {
-  transition: transform var(--motion-fast) var(--easing),
+  transition:
+    transform var(--motion-fast) var(--easing),
     opacity var(--motion-fast) var(--easing);
 }
 
@@ -98,7 +102,8 @@
 .collapse-y-enter-active,
 .collapse-y-leave-active {
   transform-origin: top;
-  transition: transform var(--motion-med) var(--easing),
+  transition:
+    transform var(--motion-med) var(--easing),
     opacity var(--motion-med) var(--easing);
 }
 
@@ -106,7 +111,8 @@
 
 /* лёгкое приподнятие */
 .anim-hover-pop {
-  transition: transform var(--motion-fast) var(--easing),
+  transition:
+    transform var(--motion-fast) var(--easing),
     box-shadow var(--motion-fast) var(--easing);
 }
 .anim-hover-pop:hover {

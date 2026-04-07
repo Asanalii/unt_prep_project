@@ -1,18 +1,17 @@
+<!-- src/pages/auth/RegisterPage.vue -->
 <script setup>
-// ===== Libraries
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 
-// ===== Stores
 import { useAuthStore } from "@/stores/auth";
 
-// ===== UI
 import BaseCard from "@/components/atoms/BaseCard.vue";
 import BaseInput from "@/components/atoms/BaseInput.vue";
 import BaseButton from "@/components/atoms/BaseButton.vue";
 import LocalizedLink from "@/i18n/LocalizedLink.vue";
 
+const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
 
@@ -29,22 +28,47 @@ const ok = ref("");
 async function onSubmit() {
   error.value = "";
   ok.value = "";
-  loading.value = true;
+
   try {
-    if (password.value !== pass2.value)
+    if (!name.value.trim()) {
+      throw new Error(t("auth.enter_name") || "Введите имя");
+    }
+
+    if (!email.value.trim()) {
+      throw new Error(t("auth.enter_email") || "Введите email");
+    }
+
+    if (!password.value) {
+      throw new Error(t("auth.enter_password") || "Введите пароль");
+    }
+
+    if (password.value.length < 6) {
+      throw new Error(
+        t("auth.password_too_short") ||
+          "Пароль должен быть не менее 6 символов",
+      );
+    }
+
+    if (password.value !== pass2.value) {
       throw new Error(t("auth.password_mismatch") || "Пароли не совпадают");
+    }
+
+    loading.value = true;
+
     await auth.register({
-      name: name.value,
-      email: email.value,
+      name: name.value.trim(),
+      email: email.value.trim(),
       password: password.value,
     });
 
     ok.value =
       t("auth.register_success") || "Регистрация успешна! Теперь войдите.";
-    setTimeout(
-      () => router.push({ name: "login", query: { email: email.value } }),
-      600
-    );
+
+    await router.push({
+      name: "login",
+      params: { locale: route.params.locale },
+      query: { email: email.value.trim() },
+    });
   } catch (e) {
     error.value = e.message || t("auth.register_error") || "Ошибка регистрации";
   } finally {
@@ -62,14 +86,17 @@ async function onSubmit() {
       <label>{{ t("common.name") || "Имя" }}</label>
       <BaseInput v-model="name" :placeholder="t('common.name') || 'Имя'" />
     </div>
+
     <div class="field">
       <label>{{ t("auth.email") }}</label>
       <BaseInput v-model="email" placeholder="you@example.com" />
     </div>
+
     <div class="field">
       <label>{{ t("auth.password") }}</label>
       <BaseInput v-model="password" type="password" placeholder="••••••••" />
     </div>
+
     <div class="field">
       <label>{{ t("auth.password_repeat") }}</label>
       <BaseInput v-model="pass2" type="password" placeholder="••••••••" />

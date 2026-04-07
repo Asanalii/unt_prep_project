@@ -4,7 +4,7 @@ export function useDashboardData() {
   const user = ref({
     id: "u1",
     email: "student@example.com",
-    name: "Aruzhan T.",
+    name: "Asan T.",
   });
 
   // === Статусы попыток (read-only список внизу)

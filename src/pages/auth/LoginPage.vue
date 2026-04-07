@@ -1,6 +1,7 @@
+<!-- src/pages/auth/LoginPage.vue -->
 <script setup>
 // ===== Libraries
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 
@@ -26,15 +27,43 @@ const password = ref("");
 const loading = ref(false);
 const error = ref("");
 
+onMounted(() => {
+  if (typeof route.query.email === "string") {
+    email.value = route.query.email;
+  }
+});
+
 async function onSubmit() {
-  ui.setLoading(true, t("auth.entering"));
+  error.value = "";
+
   try {
-    await auth.login({ email: email.value, password: password.value });
+    if (!email.value.trim()) {
+      throw new Error(t("auth.enter_email") || "Введите email");
+    }
+
+    if (!password.value) {
+      throw new Error(t("auth.enter_password") || "Введите пароль");
+    }
+
+    loading.value = true;
+    ui.setLoading(true, t("auth.entering"));
+
+    await auth.login({
+      email: email.value.trim(),
+      password: password.value,
+    });
+
     ui.toast.success(t("toast.welcome"));
-    router.replace((route.query.redirect || "/") + "");
+
+    const redirect = route.query.redirect;
+    const fallback = `/${route.params.locale || "ru"}`;
+
+    await router.replace(typeof redirect === "string" ? redirect : fallback);
   } catch (e) {
-    ui.toast.error(e.message || "Ошибка входа");
+    error.value = e.message || t("auth.login_error") || "Ошибка входа";
+    ui.toast.error(error.value);
   } finally {
+    loading.value = false;
     ui.setLoading(false);
   }
 }
@@ -49,6 +78,7 @@ async function onSubmit() {
       <label>{{ t("auth.email") }}</label>
       <BaseInput v-model="email" placeholder="you@example.com" />
     </div>
+
     <div class="field">
       <label>{{ t("auth.password") }}</label>
       <BaseInput v-model="password" type="password" placeholder="••••••••" />
