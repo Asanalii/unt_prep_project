@@ -1,3 +1,4 @@
+<!-- src/pages/forum/ForumThread.vue -->
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -7,7 +8,7 @@ import BaseCard from "@/components/atoms/BaseCard.vue";
 import BaseButton from "@/components/atoms/BaseButton.vue";
 import { useUiStore } from "@/stores/ui";
 
-import { createReply, fetchThreadById, uploadForumFiles } from "@/api/forum";
+import { createReply, fetchThreadById } from "./api/forum";
 
 const route = useRoute();
 const { t } = useI18n();
@@ -18,7 +19,6 @@ const replies = ref([]);
 const loading = ref(false);
 
 const replyBody = ref("");
-const replyFiles = ref([]);
 const replying = ref(false);
 const error = ref("");
 
@@ -27,8 +27,8 @@ async function loadThread() {
 
   try {
     const { data } = await fetchThreadById(route.params.id);
-    thread.value = data.thread || data;
-    replies.value = data.replies || [];
+    thread.value = data?.thread || data;
+    replies.value = data?.replies || [];
   } catch (e) {
     ui.toast.error(e.message || t("forum.load_error"));
   } finally {
@@ -37,10 +37,6 @@ async function loadThread() {
 }
 
 onMounted(loadThread);
-
-function onReplyFilesChange(event) {
-  replyFiles.value = Array.from(event.target.files || []);
-}
 
 async function onCreateReply() {
   error.value = "";
@@ -53,22 +49,13 @@ async function onCreateReply() {
     replying.value = true;
     ui.setLoading(true, t("forum.replying"));
 
-    let imageUrls = [];
-
-    if (replyFiles.value.length) {
-      const uploadResult = await uploadForumFiles(replyFiles.value);
-      imageUrls = uploadResult.items || [];
-    }
-
     await createReply(route.params.id, {
       body: replyBody.value.trim(),
-      images: imageUrls,
     });
 
     ui.toast.success(t("forum.reply_success"));
 
     replyBody.value = "";
-    replyFiles.value = [];
 
     await loadThread();
   } catch (e) {
@@ -93,20 +80,13 @@ async function onCreateReply() {
         </div>
 
         <div class="meta">
-          👤 {{ thread.author?.name || thread.author || "—" }} ·
-          {{ thread.created_at || thread.createdAt }}
+          {{
+            thread.author?.name || thread.author_name || thread.author || "—"
+          }}
+          · {{ thread.created_at || thread.createdAt || "—" }}
         </div>
 
         <div class="body">{{ thread.body }}</div>
-
-        <div v-if="thread.images?.length" class="images">
-          <img
-            v-for="(img, index) in thread.images"
-            :key="index"
-            :src="img"
-            alt="thread image"
-          />
-        </div>
       </BaseCard>
 
       <BaseCard class="reply-form">
@@ -118,16 +98,6 @@ async function onCreateReply() {
           :placeholder="t('forum.reply_placeholder')"
           rows="4"
         />
-
-        <div class="field">
-          <label>{{ t("forum.images") }}</label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            @change="onReplyFilesChange"
-          />
-        </div>
 
         <p v-if="error" class="err">{{ error }}</p>
 
@@ -141,20 +111,11 @@ async function onCreateReply() {
       <div class="list">
         <BaseCard v-for="reply in replies" :key="reply.id" class="reply-item">
           <div class="meta">
-            👤 {{ reply.author?.name || reply.author || "—" }} ·
-            {{ reply.created_at || reply.createdAt }}
+            {{ reply.author?.name || reply.author_name || reply.author || "—" }}
+            · {{ reply.created_at || reply.createdAt || "—" }}
           </div>
 
           <div class="body">{{ reply.body }}</div>
-
-          <div v-if="reply.images?.length" class="images">
-            <img
-              v-for="(img, index) in reply.images"
-              :key="index"
-              :src="img"
-              alt="reply image"
-            />
-          </div>
         </BaseCard>
       </div>
     </template>
@@ -182,18 +143,6 @@ async function onCreateReply() {
 .body {
   margin-top: var(--s-3);
   white-space: pre-wrap;
-}
-.images {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-3);
-  margin-top: var(--s-3);
-}
-.images img {
-  width: 180px;
-  max-width: 100%;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
 }
 .native-textarea {
   width: 100%;

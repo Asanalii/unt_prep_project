@@ -8,8 +8,7 @@ import BaseInput from "@/components/atoms/BaseInput.vue";
 import BaseButton from "@/components/atoms/BaseButton.vue";
 
 import { useUiStore } from "@/stores/ui";
-
-import { createThread, fetchThreads, uploadForumFiles } from "./api/forum";
+import { createThread, fetchThreads } from "./api/forum";
 
 const router = useRouter();
 const route = useRoute();
@@ -26,10 +25,9 @@ const creating = ref(false);
 const title = ref("");
 const subject = ref("math");
 const body = ref("");
-const files = ref([]);
 const error = ref("");
 
-const subjectOptions = [
+const subjectOptions = computed(() => [
   { value: "math", label: t("subjects.math") },
   { value: "cs", label: t("subjects.cs") },
   { value: "physics", label: t("subjects.physics") },
@@ -38,14 +36,14 @@ const subjectOptions = [
   { value: "history", label: t("subjects.history") },
   { value: "geography", label: t("subjects.geography") },
   { value: "english", label: t("subjects.english") },
-];
+]);
 
 async function loadThreads() {
   loading.value = true;
 
   try {
     const { data } = await fetchThreads();
-    threads.value = data.items || [];
+    threads.value = data?.items || data || [];
   } catch (e) {
     ui.toast.error(e.message || t("forum.load_error"));
   } finally {
@@ -69,10 +67,6 @@ const filtered = computed(() => {
   });
 });
 
-function onFilesChange(event) {
-  files.value = Array.from(event.target.files || []);
-}
-
 async function onCreateThread() {
   error.value = "";
 
@@ -88,18 +82,10 @@ async function onCreateThread() {
     creating.value = true;
     ui.setLoading(true, t("forum.creating"));
 
-    let imageUrls = [];
-
-    if (files.value.length) {
-      const uploadResult = await uploadForumFiles(files.value);
-      imageUrls = uploadResult.items || [];
-    }
-
     const { data } = await createThread({
       title: title.value.trim(),
       subject: subject.value,
       body: body.value.trim(),
-      images: imageUrls,
     });
 
     ui.toast.success(t("forum.create_success"));
@@ -107,7 +93,6 @@ async function onCreateThread() {
     title.value = "";
     subject.value = "math";
     body.value = "";
-    files.value = [];
     showCreateForm.value = false;
 
     await loadThreads();
@@ -186,11 +171,6 @@ function openThread(id) {
         />
       </div>
 
-      <div class="field">
-        <label>{{ t("forum.images") }}</label>
-        <input type="file" multiple accept="image/*" @change="onFilesChange" />
-      </div>
-
       <p v-if="error" class="err">{{ error }}</p>
 
       <div class="actions">
@@ -215,10 +195,13 @@ function openThread(id) {
         </div>
 
         <div class="meta">
-          👤 {{ thread.author?.name || thread.author || "—" }} · 👁️
-          {{ thread.views || 0 }} · 💬
+          👤
+          {{
+            thread.author?.name || thread.author_name || thread.author || "—"
+          }}
+          · 👁️ {{ thread.views || 0 }} · 💬
           {{ thread.replies_count || thread.replies || 0 }} ·
-          {{ thread.created_at || thread.createdAt }}
+          {{ thread.created_at || thread.createdAt || "—" }}
         </div>
 
         <div v-if="thread.body" class="preview">

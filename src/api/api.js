@@ -1,7 +1,10 @@
-// api/api.js
 import axios from "axios";
-import { tokenService } from "@/services/tokenService";
-import { authService } from "@/services/authService";
+import {
+  getAccessToken,
+  getRefreshToken,
+  clearTokens,
+} from "@/services/tokenService";
+import { refreshRequest } from "@/services/authService";
 
 const api = axios.create({
   baseURL: "http://127.0.0.1:8000",
@@ -27,7 +30,7 @@ const processQueue = (error, token = null) => {
 
 api.interceptors.request.use(
   (config) => {
-    const token = tokenService.getAccessToken();
+    const token = getAccessToken();
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -47,7 +50,7 @@ api.interceptors.response.use(
       error.response &&
       error.response.status === 401 &&
       !originalRequest._retry &&
-      tokenService.getRefreshToken()
+      getRefreshToken()
     ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -64,7 +67,8 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const newAccessToken = await authService.refresh();
+        const data = await refreshRequest();
+        const newAccessToken = data.access_token;
 
         processQueue(null, newAccessToken);
 
@@ -72,7 +76,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        tokenService.clearTokens();
+        clearTokens();
         window.location.href = "/login";
         return Promise.reject(refreshError);
       } finally {
