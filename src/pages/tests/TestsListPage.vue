@@ -6,10 +6,9 @@ import { useI18n } from "vue-i18n";
 
 import BaseCard from "@/components/atoms/BaseCard.vue";
 import BaseButton from "@/components/atoms/BaseButton.vue";
-import BaseInput from "@/components/atoms/BaseInput.vue";
 import { useUiStore } from "@/stores/ui";
 
-import { fetchTests } from "@/api/tests";
+import { fetchSubjects, fetchMyAttempts, createAttempt } from "./api/tests";
 
 const router = useRouter();
 const route = useRoute();
@@ -18,34 +17,35 @@ const ui = useUiStore();
 
 const loading = ref(false);
 const attemptsLoading = ref(false);
+const starting = ref(false);
 
-const mode = ref("full"); // full | subject
-const selectedSubject = ref("math");
+const mode = ref("subject"); // full | subject
+const selectedSubject = ref("");
 
-const testTemplates = ref([]);
+const subjects = ref([]);
 const attempts = ref([]);
 
-const subjectOptions = computed(() => [
-  { value: "math", label: t("subjects.math") },
-  { value: "cs", label: t("subjects.cs") },
-  { value: "physics", label: t("subjects.physics") },
-  { value: "chemistry", label: t("subjects.chemistry") },
-  { value: "biology", label: t("subjects.biology") },
-  { value: "history", label: t("subjects.history") },
-  { value: "geography", label: t("subjects.geography") },
-  { value: "english", label: t("subjects.english") },
-]);
+const fullTestAvailable = ref(false); // пока backend не поддерживает
+
+const subjectOptions = computed(() =>
+  subjects.value.map((item) => ({
+    value: item.code,
+    label: t(`subjects.${item.code}`) || item.name || item.code,
+    duration: item.duration_minutes,
+    questionCount: item.question_count,
+  })),
+);
+
+const currentSubject = computed(() =>
+  subjectOptions.value.find((item) => item.value === selectedSubject.value),
+);
 
 const currentTitle = computed(() => {
   if (mode.value === "full") {
     return t("tests_page.full_test");
   }
 
-  const subject = subjectOptions.value.find(
-    (item) => item.value === selectedSubject.value,
-  );
-
-  return `${t("tests_page.subject_test")}: ${subject?.label || selectedSubject.value}`;
+  return `${t("tests_page.subject_test")}: ${currentSubject.value?.label || "—"}`;
 });
 
 const currentDescription = computed(() => {
@@ -53,51 +53,94 @@ const currentDescription = computed(() => {
     return t("tests_page.full_test_desc");
   }
 
-  return t("tests_page.subject_test_desc");
-});
-
-const filteredTemplates = computed(() => {
-  if (mode.value === "full") {
-    return testTemplates.value.filter((item) => item.type === "full");
+  if (!currentSubject.value) {
+    return t("tests_page.choose_subject_first");
   }
 
-  return testTemplates.value.filter(
-    (item) => item.type === "subject" && item.subject === selectedSubject.value,
-  );
+  return t("tests_page.subject_test_desc_with_meta", {
+    questions: currentSubject.value.questionCount || 0,
+    duration: currentSubject.value.duration || 0,
+  });
 });
 
-async function loadTests() {
+async function loadSubjects() {
+  try {
+    const res = await fetchSubjects();
+    subjects.value = res?.data || [];
+
+    if (!selectedSubject.value && subjects.value.length) {
+      selectedSubject.value = subjects.value[0].code;
+    }
+  } catch (e) {
+    ui.toast.error(e.message || t("tests_page.load_error"));
+  }
+}
+
+async function loadAttempts() {
+  attemptsLoading.value = true;
+
+  try {
+    const res = await fetchMyAttempts();
+    attempts.value = res?.data || [];
+  } catch (e) {
+    ui.toast.error(e.message || t("tests_page.load_attempts_error"));
+  } finally {
+    attemptsLoading.value = false;
+  }
+}
+
+async function loadPage() {
   loading.value = true;
 
   try {
-    const res = await fetchTests();
-    const items = res?.data?.items || [];
-
-    testTemplates.value = items;
-    attempts.value = res?.data?.attempts || [];
-  } catch (e) {
-    ui.toast.error(e.message || t("tests_page.load_error"));
+    await Promise.all([loadSubjects(), loadAttempts()]);
   } finally {
     loading.value = false;
   }
 }
 
-onMounted(loadTests);
+onMounted(loadPage);
 
-function onStart() {
-  const query = { mode: mode.value };
+async function onStart() {
+  try {
+    if (mode.value === "full") {
+      ui.toast.info?.(t("tests_page.full_test_soon"));
+      return;
+    }
 
-  if (mode.value === "subject") {
-    query.subject = selectedSubject.value;
+    if (!selectedSubject.value) {
+      ui.toast.error(t("tests_page.choose_subject_first"));
+      return;
+    }
+
+    starting.value = true;
+    ui.setLoading(true, t("tests_page.starting"));
+
+    const res = await createAttempt({
+      subject: selectedSubject.value,
+    });
+
+    const attemptId = res?.data?.attempt_id;
+
+    if (!attemptId) {
+      throw new Error(t("tests_page.start_error"));
+    }
+
+    router.push({
+      name: "test-run",
+      params: {
+        locale: route.params.locale,
+      },
+      query: {
+        attemptId,
+      },
+    });
+  } catch (e) {
+    ui.toast.error(e.message || t("tests_page.start_error"));
+  } finally {
+    starting.value = false;
+    ui.setLoading(false);
   }
-
-  router.push({
-    name: "test-run",
-    params: {
-      locale: route.params.locale,
-    },
-    query,
-  });
 }
 
 function openAttempt(attempt) {
@@ -105,16 +148,12 @@ function openAttempt(attempt) {
     name: "attempt",
     params: {
       locale: route.params.locale,
-      id: attempt.id,
+      id: attempt.attempt_id,
     },
   });
 }
 
 function getAttemptTitle(attempt) {
-  if (attempt.mode === "full") {
-    return t("tests_page.full_test");
-  }
-
   return `${t("tests_page.subject_test")} — ${
     t(`subjects.${attempt.subject}`) || attempt.subject
   }`;
@@ -149,6 +188,10 @@ function getAttemptTitle(attempt) {
         </button>
       </div>
 
+      <div v-if="mode === 'full' && !fullTestAvailable" class="soon-box">
+        {{ t("tests_page.full_test_soon") }}
+      </div>
+
       <div v-if="mode === 'subject'" class="field">
         <label>{{ t("tests_page.choose_subject") }}</label>
         <select v-model="selectedSubject" class="native-select">
@@ -168,11 +211,16 @@ function getAttemptTitle(attempt) {
       </div>
 
       <div class="actions">
-        <BaseButton @click="onStart">
+        <BaseButton
+          :disabled="starting || (mode === 'full' && !fullTestAvailable)"
+          @click="onStart"
+        >
           {{
-            mode === "full"
-              ? t("tests_page.start_full")
-              : t("tests_page.start_subject")
+            starting
+              ? t("tests_page.starting")
+              : mode === "full"
+                ? t("tests_page.start_full")
+                : t("tests_page.start_subject")
           }}
         </BaseButton>
       </div>
@@ -185,19 +233,22 @@ function getAttemptTitle(attempt) {
 
       <div v-if="loading" class="muted">{{ t("common.loading") }}</div>
 
-      <div v-else-if="filteredTemplates.length" class="grid">
-        <BaseCard
-          v-for="tItem in filteredTemplates"
-          :key="tItem.id"
-          class="tile"
-        >
-          <div class="title">{{ tItem.title }}</div>
-          <div class="muted">
-            {{ t("common.duration_m", { min: tItem.duration || 240 }) }}
+      <div v-else-if="subjectOptions.length" class="grid">
+        <BaseCard v-for="item in subjectOptions" :key="item.value" class="tile">
+          <div class="title">
+            {{ item.label }}
           </div>
 
-          <div v-if="tItem.description" class="desc">
-            {{ tItem.description }}
+          <div class="muted">
+            {{
+              t("tests_page.questions_count", {
+                count: item.questionCount || 0,
+              })
+            }}
+          </div>
+
+          <div class="muted">
+            {{ t("common.duration_m", { min: item.duration || 0 }) }}
           </div>
         </BaseCard>
       </div>
@@ -217,7 +268,7 @@ function getAttemptTitle(attempt) {
       <div v-else-if="attempts.length" class="attempts-list">
         <BaseCard
           v-for="attempt in attempts"
-          :key="attempt.id"
+          :key="attempt.attempt_id"
           class="attempt-card"
         >
           <div class="attempt-main">
@@ -228,7 +279,7 @@ function getAttemptTitle(attempt) {
             <div class="attempt-meta">
               <span>
                 {{ t("dashboard.table.started") }}:
-                {{ attempt.started_at || attempt.created_at || "—" }}
+                {{ attempt.started_at || "—" }}
               </span>
               <span>
                 {{ t("dashboard.table.score") }}:
@@ -325,7 +376,8 @@ label {
   outline: none;
 }
 
-.current-box {
+.current-box,
+.soon-box {
   border: 1px solid var(--border);
   background: var(--bg-elev);
   border-radius: var(--radius-sm);
@@ -338,7 +390,8 @@ label {
   margin-bottom: var(--s-2);
 }
 
-.current-text {
+.current-text,
+.soon-box {
   color: var(--muted);
 }
 
@@ -367,13 +420,8 @@ label {
   margin-bottom: var(--s-1);
 }
 
-.muted,
-.desc {
+.muted {
   color: var(--muted);
-}
-
-.desc {
-  margin-top: var(--s-3);
 }
 
 .attempts-list {

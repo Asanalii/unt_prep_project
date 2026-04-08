@@ -1,41 +1,73 @@
+<!-- src/components/test/TestQuestion.vue -->
 <script setup>
 import { computed, reactive, watch } from "vue";
 
 const props = defineProps({
-  // JSON вопроса: { id, type, stem, choices, multiple, context?, media?, match? }
   question: { type: Object, required: true },
-  // (choiceId) => boolean  — используется для single/multi
   checked: { type: Function, required: true },
-  // текущее состояние match (необязательно): { "1":"B", "2":"D", ... }
   matchState: { type: Object, default: () => ({}) },
 });
 
-// События:
-// - 'toggle' (choiceId) для single/multi
-// - 'matchChange' ({index, letter}) для match
 const emit = defineEmits(["toggle", "matchChange"]);
 
-// Типы
-const isMatch = computed(() => props.question.type === "match");
-const isContext = computed(() => props.question.type === "context");
-const isMulti = computed(
-  () => props.question.type === "multi" || props.question.multiple === true
+const normalizedType = computed(() =>
+  String(props.question.type || "")
+    .trim()
+    .toLowerCase(),
 );
+
+const isMatch = computed(() => normalizedType.value === "match");
+const isContext = computed(() => normalizedType.value === "context");
+const isMulti = computed(
+  () =>
+    normalizedType.value === "multi" ||
+    normalizedType.value === "multiple" ||
+    props.question.multiple === true,
+);
+
 const inputType = computed(() => (isMulti.value ? "checkbox" : "radio"));
 
-// Для match держим локальную реактивную мапу (синхронизируем с пропом matchState)
+const questionId = computed(
+  () => props.question.id || props.question.question_id,
+);
+
+const stemText = computed(
+  () => props.question.stem || props.question.question_title || "",
+);
+
+const normalizedChoices = computed(() => {
+  // Старый формат уже готов:
+  if (Array.isArray(props.question.choices) && props.question.choices.length) {
+    return props.question.choices;
+  }
+
+  // Backend format: options: ["...", "..."]
+  if (Array.isArray(props.question.options)) {
+    return props.question.options.map((text, index) => ({
+      id: String(text),
+      label: String.fromCharCode(65 + index), // A B C D
+      text: String(text),
+    }));
+  }
+
+  return [];
+});
+
+// Для match
 const localMatch = reactive({});
 
 watch(
   () => props.matchState,
   (val) => {
-    // Скопировать в локальное состояние
     Object.keys(localMatch).forEach((k) => delete localMatch[k]);
+
     if (val && typeof val === "object") {
-      for (const [k, v] of Object.entries(val)) localMatch[k] = v;
+      for (const [k, v] of Object.entries(val)) {
+        localMatch[k] = v;
+      }
     }
   },
-  { immediate: true, deep: true }
+  { immediate: true, deep: true },
 );
 
 function onSelectMatch(index, letter) {
@@ -44,32 +76,28 @@ function onSelectMatch(index, letter) {
 }
 
 const rightOptions = computed(() => {
-  // для match берем буквы из match.right, если они подписаны A., B., ...
-  // иначе строим A..E по длине right
   const right = props.question.match?.right || [];
-  // если right уже помечен "A. ...", просто вытащим буквы слева от точки
+
   const detected = right
     .map((t) => String(t).trim())
     .map((t, i) => {
       const m = t.match(/^([A-ZА-Я])[.)]\s*/i);
-      return m ? m[1].toUpperCase() : String.fromCharCode(65 + i); // A,B,C...
+      return m ? m[1].toUpperCase() : String.fromCharCode(65 + i);
     });
+
   return detected;
 });
 </script>
 
 <template>
   <div class="question card">
-    <!-- Контекст (для type=context) -->
     <div v-if="question.context" class="context">
       <div class="context-title">Контекст</div>
       <div class="context-body">{{ question.context }}</div>
     </div>
 
-    <!-- Стем -->
-    <p class="stem">{{ question.stem }}</p>
+    <p class="stem">{{ stemText }}</p>
 
-    <!-- Картинка, если есть -->
     <img
       v-if="question.media?.img"
       class="stem-img"
@@ -77,7 +105,6 @@ const rightOptions = computed(() => {
       alt=""
     />
 
-    <!-- MATCH -->
     <div v-if="isMatch" class="match">
       <div class="match-grid">
         <div class="match-head">Левая часть</div>
@@ -110,27 +137,23 @@ const rightOptions = computed(() => {
       </div>
     </div>
 
-    <!-- SINGLE / MULTI -->
     <div v-else class="choices">
       <label
-        v-for="c in question.choices"
+        v-for="c in normalizedChoices"
         :key="c.id"
         class="choice clickable"
         :class="{ active: checked(c.id) }"
       >
         <input
           :type="inputType"
-          :name="'q' + question.id"
+          :name="'q' + questionId"
           :checked="checked(c.id)"
           @change="$emit('toggle', c.id)"
         />
-        <span class="opt">{{ c.id }})</span>
+        <span class="opt">{{ c.label || c.id }})</span>
         <span class="txt">{{ c.text }}</span>
       </label>
     </div>
-
-    <!-- Пояснение (если показываете разбор после проверки) -->
-    <!-- <div v-if="question.explanation" class="explain">{{ question.explanation }}</div> -->
   </div>
 </template>
 
@@ -142,7 +165,6 @@ const rightOptions = computed(() => {
   padding: 12px;
 }
 
-/* Контекст */
 .context {
   border: 1px dashed var(--border);
   border-radius: 10px;
@@ -172,7 +194,6 @@ const rightOptions = computed(() => {
   border: 1px solid var(--border);
 }
 
-/* SINGLE/MULTI */
 .choices {
   display: grid;
   gap: 10px;
@@ -186,16 +207,18 @@ const rightOptions = computed(() => {
   border-radius: 12px;
   border: 1px solid var(--border);
   background: var(--card);
-  transition: background-color var(--motion-fast),
-    border-color var(--motion-fast), box-shadow var(--motion-fast),
+  transition:
+    background-color var(--motion-fast),
+    border-color var(--motion-fast),
+    box-shadow var(--motion-fast),
     transform var(--motion-fast) var(--easing);
 }
 .choice:hover {
   background: color-mix(in oklab, var(--card) 85%, transparent);
 }
 .choice.active {
-  border-color: var(--accent-color);
-  box-shadow: inset 0 0 0 1px var(--accent-color);
+  border-color: var(--color-primary);
+  box-shadow: inset 0 0 0 1px var(--color-primary);
   transform: translateY(-1px);
 }
 .choice input {
@@ -208,7 +231,6 @@ const rightOptions = computed(() => {
   line-height: 1.5;
 }
 
-/* MATCH */
 .match-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -223,11 +245,9 @@ const rightOptions = computed(() => {
 .match-left {
   line-height: 1.4;
 }
-
 .match-right {
   color: white;
 }
-
 .match-select {
   width: 100%;
   padding: 8px 10px;

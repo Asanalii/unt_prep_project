@@ -115,17 +115,26 @@ const routes = [
 
       // ВАЖНО: без начального слеша, иначе выпадет из locale children
       {
-        path: "attempt/:id",
+        path: "attempt/subject/:id",
         name: "attempt",
-        component: () => import("@/pages/AttemptView.vue"),
+        component: () => import("@/pages/tests/AttemptViewPageForSubject.vue"),
       },
 
+      // Нужно потом это по предметному поменять
       {
         path: "tests/run",
         name: "test-run",
-        component: () => import("@/pages/TestRunner.vue"),
+        component: () => import("@/pages/tests/SubjectTestRunner.vue"),
         meta: { hideChrome: true, layout: "test" },
       },
+
+      // Нужно потом это тест
+      // {
+      //   path: "tests/run",
+      //   name: "test-run",
+      //   component: () => import("@/pages/TestRunner.vue"),
+      //   meta: { hideChrome: true, layout: "test" },
+      // },
 
       {
         path: "teacher",

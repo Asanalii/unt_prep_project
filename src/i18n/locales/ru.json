@@ -65,15 +65,63 @@
     "full_test": "Полный тест",
     "subject_test": "Тест по предмету",
     "full_test_desc": "Полноценный тест по 5 предметам в формате ЕНТ.",
-    "subject_test_desc": "Тренировочный тест только по одному выбранному предмету.",
+    "subject_test_desc_with_meta": "Тренировочный тест по выбранному предмету. Вопросов: {questions}, длительность: {duration} мин.",
     "choose_subject": "Выберите предмет",
+    "choose_subject_first": "Сначала выберите предмет",
     "start_full": "Пройти полный тест",
     "start_subject": "Пройти тест по предмету",
-    "available_templates": "Доступные тесты",
+    "starting": "Запускаем...",
+    "available_templates": "Доступные предметы",
     "all_attempts": "Все попытки",
     "no_attempts": "Попыток пока нет",
-    "no_templates": "Подходящих тестов пока нет",
-    "load_error": "Не удалось загрузить тесты"
+    "no_templates": "Предметы пока недоступны",
+    "load_error": "Не удалось загрузить предметы",
+    "load_attempts_error": "Не удалось загрузить попытки",
+    "start_error": "Не удалось начать тест",
+    "full_test_soon": "Полный тест из 5 предметов будет добавлен позже",
+    "questions_count": "Вопросов: {count}",
+    "attempt_not_found": "Попытка не найдена",
+    "load_attempt_error": "Не удалось загрузить попытку",
+    "save_answer_error": "Не удалось сохранить ответ",
+    "finish_test": "Завершить тест",
+    "finishing": "Завершаем...",
+    "finish_success": "Тест завершён",
+    "finish_error": "Не удалось завершить тест"
+  },
+
+  "test_question": {
+    "context": "Контекст",
+    "left_part": "Левая часть",
+    "right_part": "Правая часть",
+    "choose": "— выберите —"
+  },
+
+  "attempt_subject": {
+    "title": "Результат теста",
+    "subject": "Предмет",
+    "score": "Балл",
+    "correct_answers_count": "Правильных ответов",
+    "correct": "Правильно",
+    "incorrect": "Неправильно",
+    "not_answered": "Не отвечено",
+    "by_topic": "Статистика по темам",
+    "by_difficulty": "Статистика по сложности",
+    "difficulty": "Сложность",
+    "difficulty_easy": "Лёгкий уровень",
+    "difficulty_medium": "Средний уровень",
+    "difficulty_hard": "Сложный уровень",
+    "load_error": "Не удалось загрузить результат",
+    "no_topic_stats": "Статистика по темам пока недоступна",
+    "no_difficulty_stats": "Статистика по сложности пока недоступна",
+    "questions_review": "Просмотр вопросов и ответов",
+    "show_questions": "Показать вопросы",
+    "hide_questions": "Скрыть вопросы",
+    "question_n": "Вопрос №{n}",
+    "answered": "Отвечен",
+    "type": "Тип",
+    "topic": "Тема",
+    "selected_answers": "Выбранные ответы",
+    "no_questions_data": "Данные по вопросам недоступны"
   },
 
   "common": {
@@ -85,7 +133,8 @@
     "available": "Доступно",
     "soon": "Скоро",
     "duration_m": "Длительность: {min} мин.",
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "back": "Назад"
   },
   "toast": {
     "welcome": "Добро пожаловать!",
