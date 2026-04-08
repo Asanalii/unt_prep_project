@@ -8,7 +8,10 @@ import Dashboard from "@/pages/Dashboard.vue";
 import Chat from "@/pages/Chat.vue";
 import Subjects from "@/pages/Subjects.vue";
 import ForumPage from "../pages/forum/ForumPage.vue";
+
 import Tests from "@/pages/Tests.vue";
+import TestsListPage from "@/pages/tests/TestsListPage.vue";
+
 import Login from "@/pages/auth/LoginPage.vue";
 import Register from "@/pages/auth/RegisterPage.vue";
 import LocaleView from "@/layout/LocaleView.vue";
@@ -96,10 +99,17 @@ const routes = [
         component: () => import("@/pages/forum/ForumThread.vue"),
       },
 
+      // {
+      //   path: "tests",
+      //   name: "tests",
+      //   component: Tests,
+      //   meta: { roles: ["student", "teacher", "admin"] },
+      // },
+
       {
         path: "tests",
         name: "tests",
-        component: Tests,
+        component: TestsListPage,
         meta: { roles: ["student", "teacher", "admin"] },
       },
 
