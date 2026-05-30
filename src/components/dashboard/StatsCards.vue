@@ -1,4 +1,4 @@
-<!-- src/components/dashboard/StatCards.vue -->
+<!-- src/components/dashboard/StatsCards.vue -->
 <script setup>
 defineProps({
   summary: { type: Object, required: true },
@@ -12,7 +12,7 @@ defineProps({
       <div class="l">{{ $t("dashboard.cards.totalAttempts") }}</div>
     </article>
     <article class="card">
-      <div class="k">{{ summary.avgScore }}%</div>
+      <div class="k accent">{{ summary.avgScore }}%</div>
       <div class="l">{{ $t("dashboard.cards.avgScore") }}</div>
     </article>
     <article class="card">
@@ -29,7 +29,7 @@ defineProps({
 <style scoped>
 .cards {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -37,19 +37,25 @@ defineProps({
   border: 1px solid var(--border);
   background: var(--bg);
   border-radius: 12px;
-  padding: 14px;
+  padding: 14px 16px;
   min-width: 0;
   overflow: hidden;
 }
 
 .k {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
+  line-height: 1.1;
+}
+.k.accent {
+  color: var(--accent-color);
 }
 .l {
   color: var(--muted);
   margin-top: 6px;
+  font-size: var(--fz-14, 14px);
 }
+
 @media (max-width: 920px) {
   .cards {
     grid-template-columns: repeat(2, 1fr);

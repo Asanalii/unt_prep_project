@@ -81,7 +81,8 @@ function pct(accuracy) {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px 24px;
 }
 .row {
   display: flex;

@@ -9,10 +9,10 @@ import { useDashboard } from "@/composables/useDashboard";
 import DashboardHeader from "@/components/dashboard/DashboardHeader.vue";
 import StatsCards from "@/components/dashboard/StatsCards.vue";
 import ProgressSparkline from "@/components/dashboard/ProgressSparkline.vue";
-import DeadlinesCard from "@/components/dashboard/DeadlinesCard.vue";
 import RecommendationBanner from "@/components/dashboard/RecommendationBanner.vue";
 import WeakTopicsCard from "@/components/dashboard/WeakTopicsCard.vue";
 import AttemptsTable from "@/components/dashboard/AttemptsTable.vue";
+// import DeadlinesCard from "@/components/dashboard/DeadlinesCard.vue"; // не нужно пока
 
 const router = useRouter();
 const route = useRoute();
@@ -21,7 +21,7 @@ const auth = useAuthStore();
 const { loading, attempts, recommendation, summary, trend, fetchAll } =
   useDashboard();
 
-const examDate = "2025-11-20";
+// const examDate = "2025-11-20"; // дедлайн пока не используем
 
 onMounted(fetchAll);
 
@@ -60,18 +60,20 @@ function startNewAttempt() {
 
     <RecommendationBanner
       v-if="recommendation"
-      class="mt"
       :recommendation="recommendation"
       @view="openAttempt"
     />
 
-    <section class="grid g-top mt">
-      <StatsCards :summary="summary" />
-      <ProgressSparkline :points="trend.points" :period="trend.period" />
-      <WeakTopicsCard :recommendation="recommendation" />
-      <DeadlinesCard :exam-date="examDate" />
-    </section>
+    <!-- 1. Карточки статистики -->
+    <StatsCards :summary="summary" />
 
+    <!-- 2. График динамики -->
+    <ProgressSparkline :points="trend.points" :period="trend.period" />
+
+    <!-- 3. Слабые темы -->
+    <WeakTopicsCard :recommendation="recommendation" />
+
+    <!-- Мои попытки -->
     <section class="panel">
       <div class="panel-h">
         <h3>Мои попытки</h3>
@@ -96,37 +98,6 @@ function startNewAttempt() {
   display: grid;
   gap: 16px;
   grid-auto-rows: min-content;
-}
-.mt {
-  margin-top: 6px;
-}
-
-.grid.g-top {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-}
-.grid.g-top > * {
-  min-width: 0;
-  min-height: 0;
-}
-.grid.g-top > :nth-child(1) {
-  grid-column: span 4;
-} /* StatsCards */
-.grid.g-top > :nth-child(2) {
-  grid-column: span 4;
-} /* Sparkline */
-.grid.g-top > :nth-child(3) {
-  grid-column: span 4;
-} /* WeakTopics */
-.grid.g-top > :nth-child(4) {
-  grid-column: 1 / -1;
-} /* Deadlines */
-
-@media (max-width: 1080px) {
-  .grid.g-top > * {
-    grid-column: 1 / -1;
-  }
 }
 
 .panel {
