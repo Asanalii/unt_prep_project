@@ -1,6 +1,7 @@
 <!-- src/components/dashboard/RecommendationBanner.vue -->
 <script setup>
 import { computed } from "vue";
+import { topicLabel } from "@/utils/topics";
 
 const props = defineProps({
   recommendation: { type: Object, default: null },
@@ -42,7 +43,7 @@ function pct(accuracy) {
           <div class="t">Рекомендации по последнему тесту</div>
           <div class="chips">
             <span v-for="w in topWeak" :key="w.topic" class="chip">
-              {{ w.display_name || w.topic }}
+              {{ topicLabel(w.topic) }}
               <b>{{ pct(w.accuracy) }}%</b>
             </span>
           </div>

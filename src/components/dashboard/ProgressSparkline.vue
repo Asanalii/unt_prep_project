@@ -5,6 +5,7 @@ import { computed, ref } from "vue";
 const props = defineProps({
   points: { type: Array, required: true }, // values 0..100 (percent score per attempt)
   period: { type: String, default: "7d" },
+  title: { type: String, default: "" },
 });
 
 const gid = `spark-${Math.random().toString(36).slice(2, 8)}`;
@@ -57,8 +58,8 @@ const periodLabel = computed(() => (props.period === "30d" ? "30d" : "7d"));
 <template>
   <article class="card">
     <div class="hdr">
-      <div class="ttl">{{ $t("dashboard.cards.trend") }}</div>
-      <div class="meta">{{ periodLabel }}</div>
+      <div class="ttl">{{ title || $t("dashboard.cards.trend") }}</div>
+      <div v-if="period" class="meta">{{ periodLabel }}</div>
     </div>
 
     <div v-if="!points.length" class="empty">Нет данных</div>

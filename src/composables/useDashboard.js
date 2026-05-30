@@ -1,7 +1,10 @@
 // src/composables/useDashboard.js
 import { ref, computed, onUnmounted } from "vue";
 
-import { fetchMyAttempts } from "@/pages/dashboard/api/assessment";
+import {
+  fetchMyAttempts,
+  fetchAllResults,
+} from "@/pages/dashboard/api/assessment";
 import { fetchLatestRecommendation } from "@/pages/dashboard/api/ml";
 
 // Math test has 40 questions; score is the number of correct answers.
@@ -11,6 +14,8 @@ export function useDashboard() {
   const loading = ref(false);
   const attempts = ref([]);
   const recommendation = ref(null);
+  const results = ref([]); // per-attempt result details (for future learning curves)
+  const topicMastery = ref([]); // aggregated accuracy per topic (from backend)
 
   const finishedAttempts = computed(() =>
     attempts.value.filter((a) => a.status === "finished"),
@@ -56,6 +61,13 @@ export function useDashboard() {
     recommendation.value = res?.data || null;
   }
 
+  // single call -> backend computes every finished attempt + topic mastery
+  async function loadResults() {
+    const res = await fetchAllResults();
+    results.value = res?.data?.attempts || [];
+    topicMastery.value = res?.data?.topic_mastery || [];
+  }
+
   // ----- polling: keep refreshing while the recommendation is still computing
   let pollTimer = null;
 
@@ -79,7 +91,8 @@ export function useDashboard() {
   async function fetchAll() {
     loading.value = true;
     try {
-      await Promise.all([loadAttempts(), loadRecommendation()]);
+      // all three are independent now -> run in parallel
+      await Promise.all([loadAttempts(), loadRecommendation(), loadResults()]);
       maybePoll();
     } finally {
       loading.value = false;
@@ -92,8 +105,10 @@ export function useDashboard() {
     loading,
     attempts,
     recommendation,
+    results,
     summary,
     trend,
+    topicMastery,
     fetchAll,
     loadRecommendation,
   };

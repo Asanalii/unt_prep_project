@@ -1,6 +1,6 @@
 <!-- src/pages/Dashboard.vue -->
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 import { useAuthStore } from "@/stores/auth";
@@ -11,6 +11,8 @@ import StatsCards from "@/components/dashboard/StatsCards.vue";
 import ProgressSparkline from "@/components/dashboard/ProgressSparkline.vue";
 import RecommendationBanner from "@/components/dashboard/RecommendationBanner.vue";
 import WeakTopicsCard from "@/components/dashboard/WeakTopicsCard.vue";
+import TopicMasteryCard from "@/components/dashboard/TopicMasteryCard.vue";
+import TopicProgressModal from "./modals/TopicProgressModal.vue";
 import AttemptsTable from "@/components/dashboard/AttemptsTable.vue";
 // import DeadlinesCard from "@/components/dashboard/DeadlinesCard.vue"; // не нужно пока
 
@@ -18,8 +20,18 @@ const router = useRouter();
 const route = useRoute();
 const auth = useAuthStore();
 
-const { loading, attempts, recommendation, summary, trend, fetchAll } =
-  useDashboard();
+const {
+  loading,
+  attempts,
+  recommendation,
+  results,
+  summary,
+  trend,
+  topicMastery,
+  fetchAll,
+} = useDashboard();
+
+const selectedTopic = ref(null);
 
 // const examDate = "2025-11-20"; // дедлайн пока не используем
 
@@ -73,6 +85,9 @@ function startNewAttempt() {
     <!-- 3. Слабые темы -->
     <WeakTopicsCard :recommendation="recommendation" />
 
+    <!-- 4. Карта владения темами -->
+    <TopicMasteryCard :topics="topicMastery" @select="selectedTopic = $event" />
+
     <!-- Мои попытки -->
     <section class="panel">
       <div class="panel-h">
@@ -89,6 +104,13 @@ function startNewAttempt() {
         @new="startNewAttempt"
       />
     </section>
+
+    <TopicProgressModal
+      v-if="selectedTopic"
+      :topic="selectedTopic"
+      :results="results"
+      @close="selectedTopic = null"
+    />
   </div>
 </template>
 

@@ -13,6 +13,10 @@ export function fetchAttemptResult(attemptId) {
   return api.get(`/assessment/attempts/${attemptId}/result`);
 }
 
+export function fetchAllResults() {
+  return api.get("/assessment/results");
+}
+
 export function createAttempt(payload) {
   return api.post("/assessment/attempts", payload);
 }
