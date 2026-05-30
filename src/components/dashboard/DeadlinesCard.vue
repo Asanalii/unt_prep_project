@@ -1,3 +1,5 @@
+<!-- src/components/dashboard/DeadlinesCard.vue -->
+
 <script setup>
 import { computed } from "vue";
 const props = defineProps({ examDate: { type: String, required: true } });

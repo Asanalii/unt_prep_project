@@ -1,3 +1,4 @@
+<!-- src/components/dashboard/ProgressSparkline.vue -->
 <template>
   <article class="card">
     <div class="hdr">

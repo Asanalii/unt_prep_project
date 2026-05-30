@@ -1,3 +1,4 @@
+<!-- src/components/dashboard/ResumeBanner.vue -->
 <script setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
@@ -9,15 +10,15 @@ const props = defineProps({
   approved: { type: Object, default: null }, // { attemptId, until }
 });
 const variant = computed(() =>
-  props.approved ? "approved" : props.hold ? "hold" : "idle"
+  props.approved ? "approved" : props.hold ? "hold" : "idle",
 );
 const title = computed(() =>
   props.approved
     ? // Разрешено продолжение
       `${t("dashboard.banner.approved_title")} #${props.approved.attemptId}`
     : props.hold
-    ? `${t("dashboard.banner.hold_title")} #${props.hold.attemptId}`
-    : t("dashboard.banner.idle_title")
+      ? `${t("dashboard.banner.hold_title")} #${props.hold.attemptId}`
+      : t("dashboard.banner.idle_title"),
 );
 const subtitle = computed(() =>
   props.approved
@@ -25,8 +26,8 @@ const subtitle = computed(() =>
         time: new Date(props.approved.until).toLocaleTimeString(),
       })
     : props.hold
-    ? t("dashboard.banner.hold_sub")
-    : t("dashboard.banner.idle_sub")
+      ? t("dashboard.banner.hold_sub")
+      : t("dashboard.banner.idle_sub"),
 );
 </script>
 <template>

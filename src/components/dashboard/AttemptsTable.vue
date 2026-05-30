@@ -1,39 +1,36 @@
+<!-- src/components/dashboard/AttemptsTable.vue -->
 <script setup>
-import { computed } from "vue";
-
-const props = defineProps({
-  items: { type: Array, required: true }, // уже отфильтрованные
-  i18n: { type: Object, required: false, default: () => ({}) },
+defineProps({
+  items: { type: Array, required: true },
 });
+
+defineEmits(["open", "resume", "new"]);
+
+const TOTAL_QUESTIONS = 40;
+
+const SUBJECT_LABELS = {
+  math: "Математика",
+};
 
 const fmt = (iso) => (iso ? new Date(iso).toLocaleString() : "—");
 
-const fmtDur = (sec) => {
-  if (!sec && sec !== 0) return "—";
-  const m = Math.floor(sec / 60);
-  return `${m}m`;
-};
+function subjectLabel(code) {
+  return SUBJECT_LABELS[code] || code;
+}
 
-const statusPill = (s) => {
+function statusPill(status) {
   const map = {
-    active: { label: "В процессе", cls: "pill blue" },
-    hold: { label: "Пауза (ожидание)", cls: "pill orange" },
-    approved: { label: "Разрешено продолжить", cls: "pill green" },
-    done: { label: "Завершено", cls: "pill gray" },
-    cancelled: { label: "Отменено", cls: "pill red" },
+    in_progress: { label: "В процессе", cls: "pill blue" },
+    finished: { label: "Завершено", cls: "pill green" },
+    timed_out: { label: "Время вышло", cls: "pill orange" },
   };
-  return map[s] || { label: s, cls: "pill" };
-};
+  return map[status] || { label: status, cls: "pill" };
+}
 
-const columns = computed(() => [
-  { key: "startedAt", label: "Начат" },
-  { key: "status", label: "Статус" },
-  { key: "subjects", label: "Предметы" },
-  { key: "score", label: "Балл" },
-  { key: "durationSec", label: "Длительность" },
-  { key: "bankVersion", label: "Банк" },
-  { key: "actions", label: "Действия" },
-]);
+function scoreLabel(attempt) {
+  if (attempt.status !== "finished") return "—";
+  return `${attempt.score ?? 0} / ${TOTAL_QUESTIONS}`;
+}
 </script>
 
 <template>
@@ -41,38 +38,39 @@ const columns = computed(() => [
     <table class="tbl">
       <thead>
         <tr>
-          <th v-for="c in columns" :key="c.key">{{ c.label }}</th>
+          <th>Начат</th>
+          <th>Предмет</th>
+          <th>Статус</th>
+          <th>Балл</th>
+          <th>Действия</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="a in items" :key="a.id">
-          <td>{{ fmt(a.startedAt) }}</td>
+        <tr v-for="a in items" :key="a.attempt_id">
+          <td>{{ fmt(a.started_at) }}</td>
+          <td>{{ subjectLabel(a.subject) }}</td>
           <td>
             <span :class="statusPill(a.status).cls">
               {{ statusPill(a.status).label }}
             </span>
           </td>
-          <td class="mono">
-            {{ a.subjects.join(", ") }}
-          </td>
-          <td class="bold">
-            {{ a.score.total ?? "—" }}
-          </td>
-          <td>{{ fmtDur(a.durationSec) }}</td>
-          <td class="mono">{{ a.bankVersion }}</td>
+          <td class="bold">{{ scoreLabel(a) }}</td>
           <td class="actions">
-            <button class="ghost" @click="$emit('open', a.id)">Открыть</button>
             <button
-              v-if="a.status === 'approved'"
+              v-if="a.status === 'in_progress'"
               class="primary"
-              @click="$emit('resume', a.id)"
+              @click="$emit('resume', a.attempt_id)"
             >
               Продолжить
             </button>
+            <button v-else class="ghost" @click="$emit('open', a.attempt_id)">
+              Открыть
+            </button>
           </td>
         </tr>
+
         <tr v-if="!items.length">
-          <td colspan="7" class="empty">
+          <td colspan="5" class="empty">
             Пока нет попыток.
             <button class="primary" @click="$emit('new')">
               Начать первую попытку
@@ -107,10 +105,6 @@ thead th {
   background: var(--bg-elev);
   z-index: 1;
 }
-.mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
-}
 .bold {
   font-weight: 600;
 }
@@ -124,6 +118,7 @@ thead th {
   background: var(--accent-color);
   color: #fff;
   border: 0;
+  cursor: pointer;
 }
 .ghost {
   padding: 6px 10px;
@@ -131,6 +126,7 @@ thead th {
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
+  cursor: pointer;
 }
 .pill {
   padding: 2px 8px;
@@ -141,17 +137,11 @@ thead th {
 .pill.blue {
   background: color-mix(in oklab, dodgerblue 14%, var(--card));
 }
-.pill.orange {
-  background: color-mix(in oklab, orange 18%, var(--card));
-}
 .pill.green {
   background: color-mix(in oklab, mediumseagreen 16%, var(--card));
 }
-.pill.gray {
-  background: color-mix(in oklab, gray 16%, var(--card));
-}
-.pill.red {
-  background: color-mix(in oklab, crimson 16%, var(--card));
+.pill.orange {
+  background: color-mix(in oklab, orange 18%, var(--card));
 }
 .empty {
   text-align: center;

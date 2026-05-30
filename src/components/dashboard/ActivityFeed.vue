@@ -1,3 +1,5 @@
+<!-- src/components/dashboard/ActivityFeed.vue -->
+
 <script setup>
 defineProps({ items: { type: Array, default: () => [] } });
 </script>

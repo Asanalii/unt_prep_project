@@ -1,3 +1,4 @@
+<!-- src/components/dashboard/StatCards.vue -->
 <script setup>
 defineProps({
   summary: { type: Object, required: true },

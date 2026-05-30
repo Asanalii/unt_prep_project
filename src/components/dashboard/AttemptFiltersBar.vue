@@ -1,3 +1,5 @@
+<!-- src/components/dashboard/AttemptsFiltersBar.vue -->
+
 <script setup>
 const props = defineProps({
   q: String,

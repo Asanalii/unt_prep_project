@@ -1,3 +1,5 @@
+<!-- src/components/dashboard/DashboardHeader.vue -->
+
 <script setup>
 defineProps({
   user: { type: Object, default: () => ({}) },
