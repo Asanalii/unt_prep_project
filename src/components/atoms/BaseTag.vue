@@ -1,3 +1,4 @@
+<!-- src/components/atoms/BaseTag.vue -->
 <script setup>
 const props = defineProps({ tone: { default: "default" } }); // default|success|warning|danger
 </script>

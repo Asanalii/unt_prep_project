@@ -86,7 +86,8 @@
     "finish_test": "Завершить тест",
     "finishing": "Завершаем...",
     "finish_success": "Тест завершён",
-    "finish_error": "Не удалось завершить тест"
+    "finish_error": "Не удалось завершить тест",
+    "continue_attempt": "Продолжить"
   },
 
   "test_question": {

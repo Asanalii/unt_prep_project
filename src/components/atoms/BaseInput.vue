@@ -1,3 +1,4 @@
+<!-- src/components/atoms/BaseInput.vue -->
 <script setup>
 const model = defineModel(); // v-model
 const props = defineProps({ placeholder: String, type: { default: "text" } });

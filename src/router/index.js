@@ -71,6 +71,13 @@ const routes = [
         meta: { requiresAuth: false, layout: "auth" },
       },
 
+      {
+        path: "landing",
+        name: "landing",
+        component: () => import("@/pages/landing/LandingPage.vue"),
+        meta: { requiresAuth: false, layout: "auth" },
+      },
+
       // приватные по умолчанию
       {
         path: "",

@@ -153,8 +153,20 @@ function openAttempt(attempt) {
   });
 }
 
+function continueAttempt(attempt) {
+  router.push({
+    name: "test-run",
+    params: {
+      locale: route.params.locale,
+    },
+    query: {
+      attemptId: attempt.attempt_id,
+    },
+  });
+}
+
 function getAttemptTitle(attempt) {
-  return `${t("tests_page.subject_test")} — ${
+  return `${t("tests_page.subject_test")} - ${
     t(`subjects.${attempt.subject}`) || attempt.subject
   }`;
 }
@@ -279,21 +291,29 @@ function getAttemptTitle(attempt) {
             <div class="attempt-meta">
               <span>
                 {{ t("dashboard.table.started") }}:
-                {{ attempt.started_at || "—" }}
+                {{ attempt.started_at || "-" }}
               </span>
               <span>
                 {{ t("dashboard.table.score") }}:
-                {{ attempt.score ?? "—" }}
+                {{ attempt.score ?? "-" }}
               </span>
               <span>
                 {{ t("dashboard.table.status") }}:
-                {{ attempt.status || "—" }}
+                {{ attempt.status || "-" }}
               </span>
             </div>
           </div>
 
           <div class="attempt-actions">
-            <BaseButton variant="ghost" @click="openAttempt(attempt)">
+            <BaseButton
+              v-if="attempt.status === 'in_progress'"
+              variant="ghost"
+              @click="continueAttempt(attempt)"
+            >
+              {{ t("tests_page.continue_attempt") }}
+            </BaseButton>
+
+            <BaseButton v-else variant="ghost" @click="openAttempt(attempt)">
               {{ t("dashboard.view") }}
             </BaseButton>
           </div>
