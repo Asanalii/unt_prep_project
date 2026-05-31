@@ -11,6 +11,7 @@ import StatsCards from "@/components/dashboard/StatsCards.vue";
 import ReadinessForecast from "@/components/dashboard/ReadinessForecast.vue";
 import LastTestSummary from "@/components/dashboard/LastTestSummary.vue";
 import ProgressSparkline from "@/components/dashboard/ProgressSparkline.vue";
+import DifficultyBreakdown from "@/components/dashboard/DifficultyBreakdown.vue";
 import RecommendationBanner from "@/components/dashboard/RecommendationBanner.vue";
 import WeakTopicsCard from "@/components/dashboard/WeakTopicsCard.vue";
 import TopicMasteryCard from "@/components/dashboard/TopicMasteryCard.vue";
@@ -32,6 +33,8 @@ const {
   lastResult,
   forecast,
   topicMastery,
+  difficultyMastery,
+  timeStats,
   fetchAll,
 } = useDashboard();
 
@@ -89,13 +92,16 @@ function startNewAttempt() {
     <!-- 3. Сводка последнего теста -->
     <LastTestSummary :result="lastResult" />
 
-    <!-- 3. График динамики -->
+    <!-- 4. График динамики -->
     <ProgressSparkline :points="trend.points" :period="trend.period" />
 
-    <!-- 3. Слабые темы -->
+    <!-- 5. Разбор по сложности + время -->
+    <DifficultyBreakdown :difficulty="difficultyMastery" :time="timeStats" />
+
+    <!-- 6. Слабые темы -->
     <WeakTopicsCard :recommendation="recommendation" />
 
-    <!-- 4. Карта владения темами -->
+    <!-- 7. Карта владения темами -->
     <TopicMasteryCard :topics="topicMastery" @select="selectedTopic = $event" />
 
     <!-- Мои попытки -->

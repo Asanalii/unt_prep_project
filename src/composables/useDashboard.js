@@ -16,6 +16,8 @@ export function useDashboard() {
   const recommendation = ref(null);
   const results = ref([]); // per-attempt result details (for future learning curves)
   const topicMastery = ref([]); // aggregated accuracy per topic (from backend)
+  const difficultyMastery = ref([]); // accuracy + avg time per difficulty (from backend)
+  const timeStats = ref(null); // overall time analytics (from backend)
 
   const finishedAttempts = computed(() =>
     attempts.value.filter((a) => a.status === "finished"),
@@ -105,6 +107,8 @@ export function useDashboard() {
     const res = await fetchAllResults();
     results.value = res?.data?.attempts || [];
     topicMastery.value = res?.data?.topic_mastery || [];
+    difficultyMastery.value = res?.data?.difficulty_mastery || [];
+    timeStats.value = res?.data?.time_stats || null;
   }
 
   // ----- polling: keep refreshing while the recommendation is still computing
@@ -150,6 +154,8 @@ export function useDashboard() {
     lastResult,
     forecast,
     topicMastery,
+    difficultyMastery,
+    timeStats,
     fetchAll,
     loadRecommendation,
   };
