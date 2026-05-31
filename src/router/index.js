@@ -147,6 +147,23 @@ const routes = [
         meta: { hideChrome: true, layout: "test" },
       },
 
+      {
+        path: "test-by-topic/:subject",
+        name: "topic-quiz-setup",
+        component: () => import("@/pages/tests/TopicQuizSetupPage.vue"),
+      },
+
+      {
+        path: "test-by-topic/:subject/quiz/:quizId",
+        name: "topic-quiz",
+        component: () => import("@/pages/tests/TopicQuizRunnerPage.vue"), // создадим следующим шагом
+      },
+      {
+        path: "test-by-topic/:subject/result/:quizId",
+        name: "topic-quiz-result",
+        component: () => import("@/pages/tests/TopicQuizResultPage.vue"), // создадим следующим шагом
+      },
+
       // Нужно потом это тест
       // {
       //   path: "tests/run",

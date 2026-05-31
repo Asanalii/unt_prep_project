@@ -53,6 +53,35 @@ function cleanText(text) {
     .trim();
 }
 
+function escapeHtml(text) {
+  return String(text || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function formatMathHtml(text) {
+  const safe = escapeHtml(cleanText(text));
+
+  return (
+    safe
+      // (x+1)^2
+      .replace(/(\([^()]+\))\^(\d+)/g, "$1<sup>$2</sup>")
+
+      // x^2, y^3, a^10
+      .replace(/([a-zA-Zа-яА-Я])\^(\d+)/g, "$1<sup>$2</sup>")
+
+      // x_1, x_2, a_10
+      .replace(/([a-zA-Zа-яА-Я])_(\d+)/g, "$1<sub>$2</sub>")
+
+      // >= <=
+      .replace(/&gt;=/g, "≥")
+      .replace(/&lt;=/g, "≤")
+  );
+}
+
 function getSectionIcon(title) {
   const value = title.toLowerCase();
 
@@ -64,6 +93,10 @@ function getSectionIcon(title) {
 
   return "•";
 }
+
+const formattedQuestionTitle = computed(() => {
+  return formatMathHtml(props.question?.question_title || "");
+});
 
 const parsedSections = computed(() => {
   const text = props.explanation || "";
@@ -82,11 +115,14 @@ const parsedSections = computed(() => {
     .filter(Boolean);
 
   if (!parts.length) {
+    const body = cleanText(text);
+
     return [
       {
         title: "Объяснение",
         icon: "💡",
-        body: cleanText(text),
+        body,
+        bodyHtml: formatMathHtml(body),
       },
     ];
   }
@@ -99,12 +135,13 @@ const parsedSections = computed(() => {
 
     const firstLine = lines[0] || "Объяснение";
     const title = cleanText(firstLine.replace(/^\d+\.\s*/, ""));
-    const body = cleanText(lines.slice(1).join("\n"));
+    const body = cleanText(lines.slice(1).join(" "));
 
     return {
       title,
       icon: getSectionIcon(title),
       body,
+      bodyHtml: formatMathHtml(body),
     };
   });
 });
@@ -129,9 +166,7 @@ const parsedSections = computed(() => {
 
           <div v-if="question" class="question-box">
             <div class="question-label">Вопрос</div>
-            <div class="question-title">
-              {{ question.question_title }}
-            </div>
+            <div class="question-title" v-html="formattedQuestionTitle" />
           </div>
 
           <div v-if="loading" class="modal-state">
@@ -154,9 +189,11 @@ const parsedSections = computed(() => {
                 <span>{{ section.title }}</span>
               </div>
 
-              <p v-if="section.body" class="section-body">
-                {{ section.body }}
-              </p>
+              <p
+                v-if="section.body"
+                class="section-body"
+                v-html="section.bodyHtml"
+              />
             </div>
           </div>
         </div>
@@ -316,6 +353,20 @@ const parsedSections = computed(() => {
 .modal-fade-enter-from,
 .modal-fade-leave-to {
   opacity: 0;
+}
+
+.question-title :deep(sup),
+.section-body :deep(sup) {
+  font-size: 0.7em;
+  vertical-align: super;
+  line-height: 0;
+}
+
+.question-title :deep(sub),
+.section-body :deep(sub) {
+  font-size: 0.7em;
+  vertical-align: sub;
+  line-height: 0;
 }
 
 @keyframes spin {
