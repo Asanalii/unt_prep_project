@@ -19,11 +19,11 @@ const roleValue = computed(() => auth.role?.value ?? auth.role);
 const isAdmin = computed(() => roleValue.value === "admin");
 
 const isTeacher = computed(
-  () => roleValue.value === "teacher" || roleValue.value === "admin"
+  () => roleValue.value === "teacher" || roleValue.value === "admin",
 );
 
 const isParent = computed(
-  () => roleValue.value === "parent" || roleValue.value === "admin"
+  () => roleValue.value === "parent" || roleValue.value === "admin",
 );
 
 // раскрытие панели
@@ -83,7 +83,7 @@ const adminLinks = [
 
       <li>
         <LocalizedLink
-          :to="{ name: 'dashboard' }"
+          :to="{ name: 'dashboard2' }"
           class="item"
           exact-active-class="router-link-exact-active"
         >
@@ -180,7 +180,10 @@ const adminLinks = [
   color: var(--text);
   border: 1px solid transparent;
   text-decoration: none;
-  transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 .item:hover {
   border-color: var(--accent-color, #6c5ce7);

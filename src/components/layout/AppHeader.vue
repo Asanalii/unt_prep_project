@@ -67,7 +67,7 @@ async function onAuthClick() {
 <template>
   <header class="hdr">
     <div class="tabs">
-      <LocalizedLink :to="{ name: 'dashboard' }">
+      <LocalizedLink :to="{ name: 'dashboard2' }">
         {{ t("common.dashboard") }}
       </LocalizedLink>
       <LocalizedLink :to="{ name: 'tests' }">

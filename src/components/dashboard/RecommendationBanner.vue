@@ -22,9 +22,37 @@ function pct(accuracy) {
 
 <template>
   <div v-if="status" class="reco" :data-status="status">
+    <!-- READY with weak topics -->
+    <template v-if="status === 'ready' && topWeak.length">
+      <div class="head">
+        <div class="titles">
+          <div class="t">Над чем поработать</div>
+          <div class="s">
+            По последнему тесту слабее всего эти темы - начни с них:
+          </div>
+        </div>
+        <button class="btn" @click="emit('view', recommendation.attempt_id)">
+          Подробнее →
+        </button>
+      </div>
+
+      <div class="topics">
+        <div v-for="w in topWeak" :key="w.topic" class="topic">
+          <div class="trow">
+            <span class="name">{{ topicLabel(w.topic) }}</span>
+            <span class="acc">{{ pct(w.accuracy) }}%</span>
+          </div>
+          <div class="bar">
+            <div class="fill" :style="{ width: pct(w.accuracy) + '%' }" />
+          </div>
+          <div class="cap">точность по теме</div>
+        </div>
+      </div>
+    </template>
+
     <!-- PENDING -->
-    <template v-if="status === 'pending'">
-      <div class="left">
+    <template v-else-if="status === 'pending'">
+      <div class="simple">
         <span class="spinner" />
         <div>
           <div class="t">Анализируем ваш последний тест…</div>
@@ -35,30 +63,9 @@ function pct(accuracy) {
       </div>
     </template>
 
-    <!-- READY with weak topics -->
-    <template v-else-if="status === 'ready' && topWeak.length">
-      <div class="left">
-        <div class="dot" />
-        <div>
-          <div class="t">Рекомендации по последнему тесту</div>
-          <div class="chips">
-            <span v-for="w in topWeak" :key="w.topic" class="chip">
-              {{ topicLabel(w.topic) }}
-              <b>{{ pct(w.accuracy) }}%</b>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div class="right">
-        <button class="btn" @click="emit('view', recommendation.attempt_id)">
-          Подробнее
-        </button>
-      </div>
-    </template>
-
     <!-- READY, no weak topics -->
     <template v-else-if="status === 'ready'">
-      <div class="left">
+      <div class="simple">
         <div class="dot ok" />
         <div>
           <div class="t">Отличная работа!</div>
@@ -71,7 +78,7 @@ function pct(accuracy) {
 
     <!-- FAILED -->
     <template v-else-if="status === 'failed'">
-      <div class="left">
+      <div class="simple">
         <div class="dot warn" />
         <div>
           <div class="t">Не удалось построить рекомендации</div>
@@ -84,27 +91,27 @@ function pct(accuracy) {
 
 <style scoped>
 .reco {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 12px 14px;
+  padding: 14px;
   background: var(--bg);
 }
 .reco[data-status="ready"] {
-  border-color: color-mix(in oklab, var(--accent-color) 45%, var(--border));
+  border-color: color-mix(in oklab, var(--accent-color) 40%, var(--border));
 }
 .reco[data-status="failed"] {
   border-color: color-mix(in oklab, var(--danger, crimson) 45%, var(--border));
 }
 
-.left {
+/* header */
+.head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 12px;
-  min-width: 0;
 }
 .t {
   font-weight: 700;
@@ -114,27 +121,69 @@ function pct(accuracy) {
   margin-top: 2px;
   font-size: var(--fz-14, 14px);
 }
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 6px;
+.btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--accent-color);
+  background: color-mix(in oklab, var(--accent-color) 16%, var(--bg));
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-size: 12px;
+
+/* weak topic cards */
+.topics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.topic {
   border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
   background: var(--bg-elev, var(--card));
 }
-.chip b {
+.trow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.name {
+  font-weight: 600;
+}
+.acc {
+  font-weight: 700;
   color: var(--danger, #ff5c5c);
 }
+.bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--bg);
+  overflow: hidden;
+}
+.fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--danger, #ff5c5c),
+    var(--warning, #f5a623)
+  );
+}
+.cap {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 6px;
+}
 
+/* simple single-line states */
+.simple {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 .dot {
   width: 10px;
   height: 10px;
@@ -148,17 +197,6 @@ function pct(accuracy) {
 .dot.warn {
   background: var(--warning, #f5a623);
 }
-
-.btn {
-  padding: 8px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--accent-color);
-  background: color-mix(in oklab, var(--accent-color) 16%, var(--bg));
-  color: var(--text);
-  cursor: pointer;
-  white-space: nowrap;
-}
-
 .spinner {
   width: 16px;
   height: 16px;
@@ -175,8 +213,11 @@ function pct(accuracy) {
 }
 
 @media (max-width: 640px) {
-  .reco {
-    grid-template-columns: 1fr;
+  .head {
+    flex-direction: column;
+  }
+  .btn {
+    align-self: flex-start;
   }
 }
 </style>
