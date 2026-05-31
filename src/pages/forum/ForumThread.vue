@@ -25,9 +25,9 @@ const loading = ref(false);
 const rootBody = ref("");
 const rootSending = ref(false);
 
-// per-comment inline reply state: { [replyId]: { open, body, sending } }
+// inline reply state per reply id (works for top-level AND child replies)
 const replyBoxes = reactive({});
-// which comment threads are expanded to show children
+// which top-level comment threads are expanded to show children
 const expanded = reactive({});
 
 const isAuthor = computed(
@@ -41,6 +41,10 @@ function authorName(node) {
 function initials(name) {
   const n = String(name || "").trim();
   return n ? n.charAt(0).toUpperCase() : "?";
+}
+
+function replyPlaceholder(node) {
+  return `${t("forum.reply")} @${authorName(node)}…`;
 }
 
 function formatDate(value) {
@@ -76,10 +80,12 @@ async function loadThread() {
 
 onMounted(loadThread);
 
-async function submitReply(body, parentReplyId, onDone) {
+// parentReplyId: which reply we answer (null = top-level)
+// expandTopId: which top comment to keep open after reload
+async function submitReply({ body, parentReplyId, expandTopId, onDone }) {
   if (!body.trim()) {
     ui.toast.error(t("forum.enter_reply"));
-    return;
+    return false;
   }
 
   try {
@@ -89,17 +95,24 @@ async function submitReply(body, parentReplyId, onDone) {
     });
     ui.toast.success(t("forum.reply_success"));
     await loadThread();
-    if (parentReplyId != null) expanded[parentReplyId] = true;
+    if (expandTopId != null) expanded[expandTopId] = true;
     onDone?.();
+    return true;
   } catch (e) {
     ui.toast.error(e?.response?.data?.detail || t("forum.reply_error"));
+    return false;
   }
 }
 
 async function sendRoot() {
   rootSending.value = true;
-  await submitReply(rootBody.value, null, () => {
-    rootBody.value = "";
+  await submitReply({
+    body: rootBody.value,
+    parentReplyId: null,
+    expandTopId: null,
+    onDone: () => {
+      rootBody.value = "";
+    },
   });
   rootSending.value = false;
 }
@@ -111,17 +124,24 @@ function box(replyId) {
   return replyBoxes[replyId];
 }
 
-function toggleReplyBox(node) {
-  const b = box(node.id);
+function toggleBox(replyId) {
+  const b = box(replyId);
   b.open = !b.open;
 }
 
-async function sendChild(node) {
+// node can be a top-level reply or a child reply
+async function sendReply(node) {
   const b = box(node.id);
   b.sending = true;
-  await submitReply(b.body, node.id, () => {
-    b.body = "";
-    b.open = false;
+  const topId = node.parent_reply_id ?? node.id;
+  await submitReply({
+    body: b.body,
+    parentReplyId: node.id,
+    expandTopId: topId,
+    onDone: () => {
+      b.body = "";
+      b.open = false;
+    },
   });
   b.sending = false;
 }
@@ -174,7 +194,6 @@ async function toggleAccept(node) {
         </div>
       </BaseCard>
 
-      <!-- replies count -->
       <div class="replies-head">
         {{ t("forum.replies_count", { n: thread.replies_count }) }}
       </div>
@@ -203,14 +222,9 @@ async function toggleAccept(node) {
               <div class="body">{{ node.body }}</div>
 
               <div class="comment-actions">
-                <button
-                  class="link"
-                  type="button"
-                  @click="toggleReplyBox(node)"
-                >
+                <button class="link" type="button" @click="toggleBox(node.id)">
                   {{ t("forum.reply") }}
                 </button>
-
                 <button
                   v-if="isAuthor"
                   class="link"
@@ -223,7 +237,6 @@ async function toggleAccept(node) {
                       : t("forum.mark_solution")
                   }}
                 </button>
-
                 <button
                   v-if="node.children_count"
                   class="link"
@@ -238,12 +251,12 @@ async function toggleAccept(node) {
                 </button>
               </div>
 
-              <!-- inline reply box -->
+              <!-- inline reply box for the TOP comment -->
               <div v-if="box(node.id).open" class="reply-box">
                 <textarea
                   v-model="box(node.id).body"
                   class="native-textarea"
-                  :placeholder="t('forum.reply_to', { name: authorName(node) })"
+                  :placeholder="replyPlaceholder(node)"
                   rows="2"
                 />
                 <div class="actions">
@@ -255,7 +268,7 @@ async function toggleAccept(node) {
                   </BaseButton>
                   <BaseButton
                     :disabled="box(node.id).sending"
-                    @click="sendChild(node)"
+                    @click="sendReply(node)"
                   >
                     {{
                       box(node.id).sending
@@ -293,13 +306,42 @@ async function toggleAccept(node) {
                       </span>
                       {{ child.body }}
                     </div>
+
                     <button
                       class="link"
                       type="button"
-                      @click="toggleReplyBox(node)"
+                      @click="toggleBox(child.id)"
                     >
                       {{ t("forum.reply") }}
                     </button>
+
+                    <!-- inline reply box for THIS child (opens right here) -->
+                    <div v-if="box(child.id).open" class="reply-box">
+                      <textarea
+                        v-model="box(child.id).body"
+                        class="native-textarea"
+                        :placeholder="replyPlaceholder(child)"
+                        rows="2"
+                      />
+                      <div class="actions">
+                        <BaseButton
+                          variant="ghost"
+                          @click="box(child.id).open = false"
+                        >
+                          {{ t("forum.cancel_create") }}
+                        </BaseButton>
+                        <BaseButton
+                          :disabled="box(child.id).sending"
+                          @click="sendReply(child)"
+                        >
+                          {{
+                            box(child.id).sending
+                              ? t("forum.replying")
+                              : t("forum.send_reply")
+                          }}
+                        </BaseButton>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -452,7 +494,7 @@ async function toggleAccept(node) {
 .children {
   margin-top: 14px;
   display: grid;
-  gap: 12px;
+  gap: 14px;
   padding-left: 14px;
   border-left: 2px solid var(--border);
 }

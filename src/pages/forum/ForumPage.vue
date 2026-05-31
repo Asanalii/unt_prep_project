@@ -7,9 +7,10 @@ import { useI18n } from "vue-i18n";
 import BaseCard from "@/components/atoms/BaseCard.vue";
 import BaseInput from "@/components/atoms/BaseInput.vue";
 import BaseButton from "@/components/atoms/BaseButton.vue";
+import CreateThreadModal from "./modals/CreateThreadModal.vue";
 
 import { useUiStore } from "@/stores/ui";
-import { createThread, fetchThreads } from "./api/forum";
+import { fetchThreads } from "./api/forum";
 
 const router = useRouter();
 const route = useRoute();
@@ -19,29 +20,10 @@ const ui = useUiStore();
 const threads = ref([]);
 const loading = ref(false);
 const q = ref("");
-
-const showCreateForm = ref(false);
-const creating = ref(false);
-
-const title = ref("");
-const subject = ref("math");
-const body = ref("");
-const error = ref("");
-
-const subjectOptions = computed(() => [
-  { value: "math", label: t("subjects.math") },
-  { value: "cs", label: t("subjects.cs") },
-  { value: "physics", label: t("subjects.physics") },
-  { value: "chemistry", label: t("subjects.chemistry") },
-  { value: "biology", label: t("subjects.biology") },
-  { value: "history", label: t("subjects.history") },
-  { value: "geography", label: t("subjects.geography") },
-  { value: "english", label: t("subjects.english") },
-]);
+const showCreateModal = ref(false);
 
 async function loadThreads() {
   loading.value = true;
-
   try {
     const { data } = await fetchThreads();
     threads.value = data?.items || data || [];
@@ -56,74 +38,26 @@ onMounted(loadThreads);
 
 const filtered = computed(() => {
   const query = q.value.trim().toLowerCase();
-
   if (!query) return threads.value;
 
   return threads.value.filter((thread) => {
     const inTitle = (thread.title || "").toLowerCase().includes(query);
     const inBody = (thread.body || "").toLowerCase().includes(query);
     const inSubject = (thread.subject || "").toLowerCase().includes(query);
-
     return inTitle || inBody || inSubject;
   });
 });
 
-async function onCreateThread() {
-  error.value = "";
-
-  try {
-    if (!title.value.trim()) {
-      throw new Error(t("forum.enter_title"));
-    }
-
-    if (!body.value.trim()) {
-      throw new Error(t("forum.enter_body"));
-    }
-
-    creating.value = true;
-    ui.setLoading(true, t("forum.creating"));
-
-    const { data } = await createThread({
-      title: title.value.trim(),
-      subject: subject.value,
-      body: body.value.trim(),
-    });
-
-    ui.toast.success(t("forum.create_success"));
-
-    title.value = "";
-    subject.value = "math";
-    body.value = "";
-    showCreateForm.value = false;
-
-    await loadThreads();
-
-    if (data?.id) {
-      router.push({
-        name: "forum-thread",
-        params: {
-          locale: route.params.locale,
-          id: data.id,
-        },
-      });
-    }
-  } catch (e) {
-    error.value = e.message || t("forum.create_error");
-    ui.toast.error(error.value);
-  } finally {
-    creating.value = false;
-    ui.setLoading(false);
-  }
-}
-
 function openThread(id) {
   router.push({
     name: "forum-thread",
-    params: {
-      locale: route.params.locale,
-      id,
-    },
+    params: { locale: route.params.locale, id },
   });
+}
+
+async function onThreadCreated(thread) {
+  await loadThreads();
+  if (thread?.id) openThread(thread.id);
 }
 </script>
 
@@ -131,55 +65,10 @@ function openThread(id) {
   <div class="page">
     <div class="toolbar">
       <BaseInput v-model="q" :placeholder="t('forum.search_placeholder')" />
-      <BaseButton @click="showCreateForm = !showCreateForm">
-        {{
-          showCreateForm ? t("forum.cancel_create") : t("forum.create_topic")
-        }}
+      <BaseButton @click="showCreateModal = true">
+        {{ t("forum.create_topic") }}
       </BaseButton>
     </div>
-
-    <BaseCard v-if="showCreateForm" class="create-card">
-      <h3>{{ t("forum.new_topic") }}</h3>
-
-      <div class="field">
-        <label>{{ t("forum.title") }}</label>
-        <BaseInput
-          v-model="title"
-          :placeholder="t('forum.title_placeholder')"
-        />
-      </div>
-
-      <div class="field">
-        <label>{{ t("forum.subject") }}</label>
-        <select v-model="subject" class="native-select">
-          <option
-            v-for="item in subjectOptions"
-            :key="item.value"
-            :value="item.value"
-          >
-            {{ item.label }}
-          </option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>{{ t("forum.message") }}</label>
-        <textarea
-          v-model="body"
-          class="native-textarea"
-          :placeholder="t('forum.message_placeholder')"
-          rows="5"
-        />
-      </div>
-
-      <p v-if="error" class="err">{{ error }}</p>
-
-      <div class="actions">
-        <BaseButton :disabled="creating" @click="onCreateThread">
-          {{ creating ? t("forum.creating") : t("forum.publish") }}
-        </BaseButton>
-      </div>
-    </BaseCard>
 
     <div v-if="loading" class="muted">{{ t("common.loading") }}</div>
 
@@ -214,6 +103,12 @@ function openThread(id) {
     <div v-else class="muted">
       {{ t("forum.empty") }}
     </div>
+
+    <CreateThreadModal
+      :open="showCreateModal"
+      @close="showCreateModal = false"
+      @created="onThreadCreated"
+    />
   </div>
 </template>
 
@@ -227,12 +122,20 @@ function openThread(id) {
   grid-template-columns: 1fr auto;
   gap: var(--s-3);
 }
-.create-card,
+.list {
+  display: grid;
+  gap: var(--s-4);
+}
 .item {
   padding: var(--s-5);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
 }
-.field {
-  margin-bottom: var(--s-3);
+.item:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
 }
 .title {
   font-weight: 700;
@@ -240,8 +143,7 @@ function openThread(id) {
 }
 .meta,
 .preview,
-.muted,
-label {
+.muted {
   color: var(--muted);
 }
 .meta {
@@ -249,29 +151,5 @@ label {
 }
 .preview {
   margin-top: var(--s-3);
-}
-.err {
-  color: var(--danger);
-  margin: 8px 0 12px;
-}
-.actions {
-  display: flex;
-  justify-content: flex-end;
-}
-.native-select,
-.native-textarea {
-  width: 100%;
-  border: 1px solid var(--border);
-  background: var(--bg-elev);
-  color: var(--text);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  outline: none;
-}
-.item {
-  cursor: pointer;
-}
-.item:hover {
-  border-color: var(--color-primary);
 }
 </style>
