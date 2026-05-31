@@ -51,6 +51,45 @@ export function useDashboard() {
     return { points: points.length ? points : [0], period: "7d" };
   });
 
+  // most recent finished attempt's full result (for the summary donut)
+  const lastResult = computed(() => {
+    if (!results.value.length) return null;
+    return [...results.value].sort(
+      (a, b) => new Date(b.finished_at) - new Date(a.finished_at),
+    )[0];
+  });
+
+  // ENT readiness forecast: a recency-weighted projection of recent test scores.
+  // NOTE: heuristic projection, not the ML model — clearly framed as an estimate.
+  const forecast = computed(() => {
+    const finished = [...finishedAttempts.value].sort(
+      (a, b) => new Date(a.finished_at) - new Date(b.finished_at),
+    );
+    if (!finished.length) return null;
+
+    const pcts = finished.map((a) => ((a.score || 0) / TOTAL_QUESTIONS) * 100);
+    const recent = pcts.slice(-3); // last up to 3 tests
+    const weights = recent.map((_, i) => i + 1); // most recent weighs most
+    const wsum = weights.reduce((s, w) => s + w, 0);
+
+    const projectedPct = Math.round(
+      recent.reduce((s, p, i) => s + p * weights[i], 0) / wsum,
+    );
+    const projectedScore = Math.round((projectedPct / 100) * TOTAL_QUESTIONS);
+    const trendDelta = Math.round(pcts[pcts.length - 1] - pcts[0]);
+    const n = finished.length;
+    const confidence = n >= 5 ? "high" : n >= 3 ? "medium" : "low";
+
+    return {
+      projectedPct,
+      projectedScore,
+      totalQuestions: TOTAL_QUESTIONS,
+      trendDelta,
+      confidence,
+      attempts: n,
+    };
+  });
+
   async function loadAttempts() {
     const res = await fetchMyAttempts();
     attempts.value = res?.data || [];
@@ -108,6 +147,8 @@ export function useDashboard() {
     results,
     summary,
     trend,
+    lastResult,
+    forecast,
     topicMastery,
     fetchAll,
     loadRecommendation,

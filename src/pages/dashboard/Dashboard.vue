@@ -8,6 +8,8 @@ import { useDashboard } from "@/composables/useDashboard";
 
 import DashboardHeader from "@/components/dashboard/DashboardHeader.vue";
 import StatsCards from "@/components/dashboard/StatsCards.vue";
+import ReadinessForecast from "@/components/dashboard/ReadinessForecast.vue";
+import LastTestSummary from "@/components/dashboard/LastTestSummary.vue";
 import ProgressSparkline from "@/components/dashboard/ProgressSparkline.vue";
 import RecommendationBanner from "@/components/dashboard/RecommendationBanner.vue";
 import WeakTopicsCard from "@/components/dashboard/WeakTopicsCard.vue";
@@ -27,6 +29,8 @@ const {
   results,
   summary,
   trend,
+  lastResult,
+  forecast,
   topicMastery,
   fetchAll,
 } = useDashboard();
@@ -79,7 +83,13 @@ function startNewAttempt() {
     <!-- 1. Карточки статистики -->
     <StatsCards :summary="summary" />
 
-    <!-- 2. График динамики -->
+    <!-- 2. Прогноз готовности к ЕНТ -->
+    <ReadinessForecast :forecast="forecast" />
+
+    <!-- 3. Сводка последнего теста -->
+    <LastTestSummary :result="lastResult" />
+
+    <!-- 3. График динамики -->
     <ProgressSparkline :points="trend.points" :period="trend.period" />
 
     <!-- 3. Слабые темы -->
