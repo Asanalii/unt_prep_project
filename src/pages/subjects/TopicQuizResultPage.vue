@@ -6,6 +6,7 @@ import { useI18n } from "vue-i18n";
 
 import BaseButton from "@/components/atoms/BaseButton.vue";
 import BaseCard from "@/components/atoms/BaseCard.vue";
+import TopicQuizHistory from "./components/TopicQuizHistory.vue";
 
 import { useUiStore } from "@/stores/ui";
 import { fetchTopicQuizResult } from "@/api/topicQuiz";
@@ -213,6 +214,11 @@ onMounted(loadResult);
           {{ t(`subjects.${subject}`) || subject }}
         </BaseButton>
       </div>
+
+      <!-- all quizzes the user has taken, with topic filter -->
+      <BaseCard class="history-card">
+        <TopicQuizHistory :subject="subject" />
+      </BaseCard>
     </template>
   </div>
 </template>
@@ -260,7 +266,8 @@ onMounted(loadResult);
 
 .hero,
 .summary-card,
-.panel {
+.panel,
+.history-card {
   padding: 16px;
 }
 

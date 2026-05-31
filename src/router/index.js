@@ -6,7 +6,7 @@ import { i18n, loadLocale } from "@/i18n";
 // страницы
 import Dashboard from "@/pages/Dashboard.vue";
 import Chat from "@/pages/Chat.vue";
-import Subjects from "@/pages/Subjects.vue";
+import Subjects from "@/pages/subjects/SubjectsPage.vue";
 import ForumPage from "../pages/forum/ForumPage.vue";
 
 import Tests from "@/pages/Tests.vue";
@@ -101,11 +101,7 @@ const routes = [
         name: "chat",
         component: Chat,
       },
-      {
-        path: "subjects",
-        name: "subjects",
-        component: Subjects,
-      },
+
       {
         path: "forum",
         name: "forum",
@@ -117,13 +113,6 @@ const routes = [
         name: "forum-thread",
         component: () => import("@/pages/forum/ForumThread.vue"),
       },
-
-      // {
-      //   path: "tests",
-      //   name: "tests",
-      //   component: Tests,
-      //   meta: { roles: ["student", "teacher", "admin"] },
-      // },
 
       {
         path: "tests",
@@ -139,29 +128,27 @@ const routes = [
         component: () => import("@/pages/tests/AttemptViewPageForSubject.vue"),
       },
 
-      // Нужно потом это по предметному поменять
       {
-        path: "tests/run",
-        name: "test-run",
-        component: () => import("@/pages/tests/SubjectTestRunner.vue"),
-        meta: { hideChrome: true, layout: "test" },
+        path: "subjects",
+        name: "subjects",
+        component: Subjects,
       },
 
       {
         path: "test-by-topic/:subject",
         name: "topic-quiz-setup",
-        component: () => import("@/pages/tests/TopicQuizSetupPage.vue"),
+        component: () => import("@/pages/subjects/TopicQuizSetupPage.vue"),
       },
 
       {
         path: "test-by-topic/:subject/quiz/:quizId",
         name: "topic-quiz",
-        component: () => import("@/pages/tests/TopicQuizRunnerPage.vue"), // создадим следующим шагом
+        component: () => import("@/pages/subjects/TopicQuizRunnerPage.vue"), // создадим следующим шагом
       },
       {
         path: "test-by-topic/:subject/result/:quizId",
         name: "topic-quiz-result",
-        component: () => import("@/pages/tests/TopicQuizResultPage.vue"), // создадим следующим шагом
+        component: () => import("@/pages/subjects/TopicQuizResultPage.vue"), // создадим следующим шагом
       },
 
       // Нужно потом это тест

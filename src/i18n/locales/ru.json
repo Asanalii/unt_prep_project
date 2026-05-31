@@ -350,6 +350,10 @@
     "load_error": "Не удалось загрузить темы",
     "create_error": "Не удалось создать квиз",
 
+    "filter_all": "Все",
+    "nothing_found": "Ничего не найдено",
+    "questions_short": "вопр.",
+
     "question_n": "Вопрос {n}",
     "of_total": "из {n}",
     "hint": "Подсказка",
