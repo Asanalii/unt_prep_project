@@ -1,3 +1,4 @@
+<!-- src/pages/forum/ForumPage.vue -->
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";

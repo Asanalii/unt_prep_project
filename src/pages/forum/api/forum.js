@@ -13,10 +13,6 @@ export function createThread(payload) {
   return api.post("/forum/threads", payload);
 }
 
-export function createReply(threadId, payload) {
-  return api.post(`/forum/threads/${threadId}/replies`, payload);
-}
-
 export async function uploadForumFiles(files) {
   const formData = new FormData();
 
@@ -31,4 +27,13 @@ export async function uploadForumFiles(files) {
   });
 
   return data;
+}
+
+export function createReply(threadId, payload) {
+  // payload: { body, parent_reply_id? }
+  return api.post(`/forum/threads/${threadId}/replies`, payload);
+}
+
+export function acceptReply(threadId, replyId) {
+  return api.post(`/forum/threads/${threadId}/replies/${replyId}/accept`);
 }
