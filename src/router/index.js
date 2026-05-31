@@ -152,12 +152,12 @@ const routes = [
       },
 
       // Нужно потом это тест
-      // {
-      //   path: "tests/run",
-      //   name: "test-run",
-      //   component: () => import("@/pages/TestRunner.vue"),
-      //   meta: { hideChrome: true, layout: "test" },
-      // },
+      {
+        path: "tests/run",
+        name: "test-run",
+        component: () => import("@/pages/tests/SubjectTestRunner.vue"),
+        meta: { hideChrome: true, layout: "test" },
+      },
 
       {
         path: "teacher",
