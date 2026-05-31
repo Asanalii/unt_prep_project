@@ -6,8 +6,14 @@ import { useI18n } from "vue-i18n";
 
 import BaseButton from "@/components/atoms/BaseButton.vue";
 import BaseCard from "@/components/atoms/BaseCard.vue";
+import QuestionExplanation from "./modals/QuestionExplanation.vue";
+
 import { useUiStore } from "@/stores/ui";
-import { fetchAttemptResult, fetchAttemptDetail } from "./api/tests";
+import {
+  fetchAttemptResult,
+  fetchAttemptDetail,
+  explainAttemptQuestion,
+} from "./api/tests";
 
 const route = useRoute();
 const router = useRouter();
@@ -21,6 +27,14 @@ const result = ref(null);
 const attemptDetail = ref(null);
 
 const showQuestions = ref(false);
+
+const explanationModalOpen = ref(false);
+const explanationLoading = ref(false);
+const explanationError = ref("");
+const selectedExplanation = ref("");
+const selectedExplanationQuestion = ref(null);
+
+const explanationsCache = ref({});
 
 const attemptId = computed(() => Number(route.params.id));
 
@@ -99,6 +113,46 @@ function getQuestionState(question) {
 
 function isSelected(question, option) {
   return (question.selected_answers || []).includes(option);
+}
+
+async function openExplanation(question) {
+  selectedExplanationQuestion.value = question;
+  explanationError.value = "";
+  selectedExplanation.value = "";
+  explanationModalOpen.value = true;
+
+  const cacheKey = question.question_id;
+
+  if (explanationsCache.value[cacheKey]) {
+    selectedExplanation.value = explanationsCache.value[cacheKey];
+    return;
+  }
+
+  explanationLoading.value = true;
+
+  try {
+    const res = await explainAttemptQuestion({
+      attempt_id: attemptId.value,
+      question_id: question.question_id,
+    });
+
+    const explanation = res?.data?.explanation || "";
+
+    selectedExplanation.value = explanation;
+    explanationsCache.value[cacheKey] = explanation;
+  } catch (e) {
+    explanationError.value =
+      e?.response?.data?.detail ||
+      e.message ||
+      "Не удалось получить объяснение";
+    ui.toast.error(explanationError.value);
+  } finally {
+    explanationLoading.value = false;
+  }
+}
+
+function closeExplanationModal() {
+  explanationModalOpen.value = false;
 }
 </script>
 
@@ -333,6 +387,16 @@ function isSelected(question, option) {
                   {{ t("attempt_subject.not_answered") }}
                 </span>
               </div>
+
+              <div class="question-actions">
+                <BaseButton
+                  variant="ghost"
+                  :disabled="explanationLoading"
+                  @click="openExplanation(question)"
+                >
+                  Объяснить задачу
+                </BaseButton>
+              </div>
             </div>
           </div>
 
@@ -342,6 +406,20 @@ function isSelected(question, option) {
         </div>
       </BaseCard>
     </template>
+
+    <QuestionExplanation
+      :open="explanationModalOpen"
+      :question="selectedExplanationQuestion"
+      :explanation="selectedExplanation"
+      :loading="explanationLoading"
+      :error="explanationError"
+      :difficulty-label="
+        selectedExplanationQuestion
+          ? formatDifficultyLabel(selectedExplanationQuestion.difficulty)
+          : ''
+      "
+      @close="closeExplanationModal"
+    />
   </div>
 </template>
 
@@ -582,6 +660,12 @@ function isSelected(question, option) {
 
 .muted {
   color: var(--muted);
+}
+
+.question-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
 }
 
 @media (max-width: 900px) {

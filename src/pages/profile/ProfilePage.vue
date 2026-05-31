@@ -308,7 +308,6 @@ async function onLogout() {
   display: grid;
   gap: 16px;
   grid-auto-rows: min-content;
-  max-width: 920px;
 }
 .page-title {
   margin: 0;

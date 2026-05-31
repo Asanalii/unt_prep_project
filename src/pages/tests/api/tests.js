@@ -28,3 +28,7 @@ export function finishAttempt(attemptId) {
 export function fetchAttemptResult(attemptId) {
   return api.get(`/assessment/attempts/${attemptId}/result`);
 }
+
+export function explainAttemptQuestion(payload) {
+  return api.post("/ai/explain-question", payload);
+}
