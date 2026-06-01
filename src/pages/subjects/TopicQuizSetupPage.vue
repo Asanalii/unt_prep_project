@@ -184,7 +184,7 @@ onMounted(loadTopics);
             <span class="topic-text">
               <span class="topic-name">{{ topicLabel(item.topic) }}</span>
               <span class="topic-available">
-                {{ t("quiz.available_n", { n: item.available }) }}
+                {{ t("quiz.available_n", { n: item.available * 3 }) }}
               </span>
             </span>
           </button>
